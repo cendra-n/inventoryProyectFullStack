@@ -6,7 +6,7 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "inventory-movements")
+@Table(name = "inventory_movements")
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor @Builder
 @ToString(onlyExplicitlyIncluded = true)
