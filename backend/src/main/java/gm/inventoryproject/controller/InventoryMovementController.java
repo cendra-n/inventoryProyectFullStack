@@ -1,99 +1,160 @@
 package gm.inventoryproject.controller;
 
-import gm.inventoryproject.dto.InventoryMovementDto;
+import gm.inventoryproject.dto.inventorymovement.InventoryMovementRequestDto;
+import gm.inventoryproject.dto.inventorymovement.InventoryMovementResponseDto;
 import gm.inventoryproject.model.InventoryMovement;
 import gm.inventoryproject.model.Product;
 import gm.inventoryproject.service.IInventoryMovementService;
+import gm.inventoryproject.service.IProductService;
 
+import jakarta.validation.Valid;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/movements")
+@RequestMapping("/inventory-app/movements")
+@Tag(name = "Inventory Movement", description = "Endpoints para gestionar movimientos de inventario")
+@CrossOrigin(origins = "https://localhost:4200")
 public class InventoryMovementController {
 
     private final IInventoryMovementService movementService;
+    private final IProductService productService;
 
-    public InventoryMovementController(IInventoryMovementService movementService) {
+    public InventoryMovementController(
+            IInventoryMovementService movementService,
+            IProductService productService
+    ) {
         this.movementService = movementService;
+        this.productService = productService;
     }
 
-    private InventoryMovementDto toDto(InventoryMovement m) {
-        return new InventoryMovementDto(
+    // -------------------------------------------
+    // MAPPER
+    // -------------------------------------------
+    private InventoryMovementResponseDto toResponse(InventoryMovement m) {
+        return new InventoryMovementResponseDto(
                 m.getId(),
                 m.getQuantity(),
                 m.getType().name(),
-                m.getDate().toString(),
-                m.getProduct().getId()
+                m.getDate(),
+                m.getProduct().getId(),
+                m.getProduct().getName()
         );
     }
 
-    // 🔹 Listar todo
+    // -------------------------------------------
+    // GET ALL
+    // -------------------------------------------
+    @Operation(summary = "Obtener todos los movimientos de inventario")
+    @ApiResponse(responseCode = "200", description = "Listado obtenido correctamente")
     @GetMapping
-    public List<InventoryMovementDto> getAll() {
-        return movementService.getAll()
-                .stream().map(this::toDto).collect(Collectors.toList());
+    public ResponseEntity<List<InventoryMovementResponseDto>> getAll() {
+        List<InventoryMovementResponseDto> list = movementService.getAll()
+                .stream().map(this::toResponse).toList();
+
+        return ResponseEntity.ok(list);
     }
 
-    // 🔹 Obtener por ID
+    // -------------------------------------------
+    // GET BY ID
+    // -------------------------------------------
+    @Operation(summary = "Obtener un movimiento por ID")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Movimiento encontrado"),
+            @ApiResponse(responseCode = "404", description = "No existe un movimiento con ese ID")
+    })
     @GetMapping("/{id}")
-    public InventoryMovementDto getById(@PathVariable Long id) {
-        return toDto(movementService.getById(id));
+    public ResponseEntity<InventoryMovementResponseDto> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(toResponse(movementService.getById(id)));
     }
 
-    // 🔹 Crear movimiento
+    // -------------------------------------------
+    // CREATE
+    // -------------------------------------------
+    @Operation(summary = "Registrar un nuevo movimiento de inventario")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Movimiento creado exitosamente"),
+            @ApiResponse(responseCode = "400", description = "Datos inválidos")
+    })
     @PostMapping
-    public InventoryMovementDto create(@RequestBody InventoryMovementDto dto) {
+    public ResponseEntity<InventoryMovementResponseDto> create(
+            @Valid @RequestBody InventoryMovementRequestDto request
+    ) {
+        Product product = productService.getById(request.getProductId());
 
-        InventoryMovement movement = InventoryMovement.builder()
-                .quantity(dto.getQuantity())
-                .type(InventoryMovement.MovementType.valueOf(dto.getType()))
-                .product(Product.builder().id(dto.getProductId()).build())
-                .build();
+        InventoryMovement movement = new InventoryMovement();
+        movement.setQuantity(request.getQuantity());
+        movement.setType(InventoryMovement.MovementType.valueOf(request.getType()));
+        movement.setProduct(product);
 
-        return toDto(movementService.create(movement));
+        InventoryMovement saved = movementService.create(movement);
+
+        return ResponseEntity.status(201).body(toResponse(saved));
     }
 
-    // 🔹 Eliminar
+    // -------------------------------------------
+    // DELETE
+    // -------------------------------------------
+    @Operation(summary = "Eliminar un movimiento")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Movimiento eliminado correctamente"),
+            @ApiResponse(responseCode = "404", description = "No existe un movimiento con ese ID")
+    })
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         movementService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 
-    // 🔹 Buscar por producto
+    // -------------------------------------------
+    // GET MOVEMENTS BY PRODUCT
+    // -------------------------------------------
+    @Operation(summary = "Obtener movimientos filtrados por producto")
     @GetMapping("/product/{productId}")
-    public List<InventoryMovementDto> getByProduct(@PathVariable Long productId) {
-        return movementService.getByProduct(productId)
-                .stream().map(this::toDto).collect(Collectors.toList());
+    public ResponseEntity<List<InventoryMovementResponseDto>> getByProduct(@PathVariable Long productId) {
+        List<InventoryMovementResponseDto> list = movementService.getByProduct(productId)
+                .stream().map(this::toResponse).toList();
+
+        return ResponseEntity.ok(list);
     }
 
-    // 🔹 Buscar por rango de fecha
-    @GetMapping("/date")
-    public List<InventoryMovementDto> getByDateRange(
-            @RequestParam String start,
-            @RequestParam String end
+    // -------------------------------------------
+    // GET MOVEMENTS BY DATE RANGE
+    // -------------------------------------------
+    @Operation(summary = "Obtener movimientos filtrados por rango de fechas")
+    @GetMapping("/dates")
+    public ResponseEntity<List<InventoryMovementResponseDto>> getByDateRange(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end
     ) {
-        return movementService.getByDateRange(
-                LocalDateTime.parse(start),
-                LocalDateTime.parse(end)
-        ).stream().map(this::toDto).collect(Collectors.toList());
+        List<InventoryMovementResponseDto> list = movementService.getByDateRange(start, end)
+                .stream().map(this::toResponse).toList();
+
+        return ResponseEntity.ok(list);
     }
 
-    // 🔹 Buscar por producto + fecha
-    @GetMapping("/product/{productId}/date")
-    public List<InventoryMovementDto> getByProductAndDate(
+    // -------------------------------------------
+    // GET BY PRODUCT + DATE
+    // -------------------------------------------
+    @Operation(summary = "Obtener movimientos por producto y rango de fecha")
+    @GetMapping("/product/{productId}/dates")
+    public ResponseEntity<List<InventoryMovementResponseDto>> getByProductAndDate(
             @PathVariable Long productId,
-            @RequestParam String start,
-            @RequestParam String end
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end
     ) {
-        return movementService.getByProductAndDate(
-                productId,
-                LocalDateTime.parse(start),
-                LocalDateTime.parse(end)
-        ).stream().map(this::toDto).collect(Collectors.toList());
+        List<InventoryMovementResponseDto> list = movementService.getByProductAndDate(productId, start, end)
+                .stream().map(this::toResponse).toList();
+
+        return ResponseEntity.ok(list);
     }
 }
-
