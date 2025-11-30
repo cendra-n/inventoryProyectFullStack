@@ -1,5 +1,7 @@
 package gm.inventoryproject.service;
 
+import gm.inventoryproject.exceptions.DuplicateFieldException;
+import gm.inventoryproject.exceptions.ResourceNotFoundException;
 import gm.inventoryproject.model.Supplier;
 import gm.inventoryproject.repository.SupplierRepository;
 import gm.inventoryproject.service.ISupplierService;
@@ -27,24 +29,22 @@ public class SupplierService implements ISupplierService {
     @Transactional(readOnly = true)
     public Supplier getById(Long id) {
         return supplierRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Supplier not found with id: " + id));
+                .orElseThrow(() ->new ResourceNotFoundException("Proveedor no encontrado con id: " + id));
     }
 
     @Override
     @Transactional(readOnly = true)
     public Supplier findByName(String name) {
-        // If you later add a method in repository like findByName, use it.
-        // For now we'll search by name in memory (inefficient) — better to add repo method later.
+
         return supplierRepository.findAll().stream()
                 .filter(s -> name.equalsIgnoreCase(s.getName()))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("Supplier not found with name: " + name));
+                .orElseThrow(() -> new ResourceNotFoundException("Proveedor no encontrado con nombre: " + name));
     }
 
     @Override
     @Transactional
     public Supplier create(Supplier supplier) {
-        // optional: check duplicates (email/phone) if you add existsByEmail / existsByPhone in repo
         return supplierRepository.save(supplier);
     }
 
@@ -56,8 +56,7 @@ public class SupplierService implements ISupplierService {
         existing.setName(updatedSupplier.getName());
         existing.setEmail(updatedSupplier.getEmail());
         existing.setPhone(updatedSupplier.getPhone());
-        // if your Supplier has address or other fields, set them here
-        // existing.setAddress(updatedSupplier.getAddress());
+
 
         return supplierRepository.save(existing);
     }
@@ -66,9 +65,31 @@ public class SupplierService implements ISupplierService {
     @Transactional
     public void delete(Long id) {
         if (!supplierRepository.existsById(id)) {
-            throw new RuntimeException("Supplier not found with id: " + id);
+            throw new ResourceNotFoundException("Proveedor no encontrado con id: " + id);
         }
         supplierRepository.deleteById(id);
     }
+
+    @Override
+    @Transactional
+    public Supplier createFromDto(gm.inventoryproject.dto.supplier.SupplierRequestDto dto) {
+
+        if (dto.getEmail() != null && supplierRepository.existsByEmail(dto.getEmail())) {
+            throw new DuplicateFieldException("El email ya está registrado");
+        }
+
+        if (dto.getPhone() != null && supplierRepository.existsByPhone(dto.getPhone())) {
+            throw new DuplicateFieldException("El teléfono ya está registrado");
+        }
+
+        Supplier supplier = Supplier.builder()
+                .name(dto.getName())
+                .email(dto.getEmail())
+                .phone(dto.getPhone())
+                .build();
+
+        return supplierRepository.save(supplier);
+    }
+
 }
 

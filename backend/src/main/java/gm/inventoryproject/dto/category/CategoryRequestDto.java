@@ -1,7 +1,5 @@
 package gm.inventoryproject.dto.category;
 
-
-
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -22,7 +20,7 @@ public class CategoryRequestDto {
     @Schema(description = "Nombre de la categoría", example = "Electrónica")
     private String name;
 
-    @Size(max = 200, message = "La descripción no puede superar los 255 caracteres")
+    @Size(max = 200, message = "La descripción no puede superar los 200 caracteres")
     @Schema(description = "Descripción de la categoría", example = "Productos relacionados con tecnología")
     private String description;
 }

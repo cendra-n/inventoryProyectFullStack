@@ -94,13 +94,7 @@ public class SupplierController {
     public ResponseEntity<SupplierResponseDto> create(
             @Valid @RequestBody SupplierRequestDto request
     ) {
-
-        Supplier supplier = new Supplier();
-        supplier.setName(request.getName());
-        supplier.setEmail(request.getEmail());
-        supplier.setPhone(request.getPhone());
-
-        Supplier saved = supplierService.create(supplier);
+        Supplier saved = supplierService.createFromDto(request);
 
         SupplierResponseDto response = new SupplierResponseDto(
                 saved.getId(),
@@ -111,6 +105,7 @@ public class SupplierController {
 
         return ResponseEntity.status(201).body(response);
     }
+
 
     // ---------------------------------------------------------
     // UPDATE

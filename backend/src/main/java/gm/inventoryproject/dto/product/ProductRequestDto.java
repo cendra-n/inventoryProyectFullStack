@@ -14,7 +14,7 @@ public class ProductRequestDto {
     @Schema(description = "Nombre del producto", example = "Mouse inalámbrico")
     private String name;
 
-    @Size(max = 240, message = "La descripción no puede superar los 255 caracteres")
+    @Size(max = 240, message = "La descripción no puede superar los 240 caracteres")
     @Schema(description = "Descripción del producto", example = "Mouse óptico inalámbrico de 1600 DPI")
     private String description;
 

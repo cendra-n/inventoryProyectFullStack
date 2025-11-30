@@ -1,5 +1,7 @@
 package gm.inventoryproject.service;
 
+import gm.inventoryproject.exceptions.DuplicateFieldException;
+import gm.inventoryproject.exceptions.ResourceNotFoundException;
 import gm.inventoryproject.model.Product;
 import gm.inventoryproject.repository.ProductRepository;
 import org.springframework.stereotype.Service;
@@ -26,24 +28,27 @@ public class ProductService implements IProductService {
     @Transactional(readOnly = true)
     public Product getById(Long id) {
         return productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con id: " + id));
     }
 
     @Override
     @Transactional(readOnly = true)
     public Product findByName(String name) {
         return productRepository.findByName(name)
-                .orElseThrow(() -> new RuntimeException("Product not found with name: " + name));
+                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con nombre: " + name));
     }
 
     @Override
     @Transactional
     public Product create(Product product) {
+
         if (productRepository.existsByName(product.getName())) {
-            throw new RuntimeException("Product already exists with name: " + product.getName());
+            throw new DuplicateFieldException("El nombre del producto ya está registrado");
         }
+
         return productRepository.save(product);
     }
+
 
     @Override
     @Transactional
@@ -64,7 +69,7 @@ public class ProductService implements IProductService {
     @Transactional
     public void delete(Long id) {
         if (!productRepository.existsById(id)) {
-            throw new RuntimeException("Product not found with id: " + id);
+            throw new ResourceNotFoundException("Producto no encontrado con id: " + id);
         }
         productRepository.deleteById(id);
     }

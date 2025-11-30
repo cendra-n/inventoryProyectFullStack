@@ -17,6 +17,8 @@ public interface ISupplierService {
     Supplier update(Long id, Supplier supplier);
 
     void delete(Long id);
+
+    Supplier createFromDto(gm.inventoryproject.dto.supplier.SupplierRequestDto dto);
 }
 
 

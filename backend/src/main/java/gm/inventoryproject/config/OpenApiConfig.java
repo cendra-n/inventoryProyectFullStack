@@ -13,7 +13,7 @@ public class OpenApiConfig {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("Inventory App")
+                        .title("CN Inventory App")
                         .version("1.0")
                         .description("Documentación de la API del proyecto sistema de inventario"));
     }
