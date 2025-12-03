@@ -18,10 +18,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/inventory-app/suppliers")
-@Tag(
-        name = "Supplier",
-        description = "Endpoints para administrar proveedores del sistema"
-)
+@Tag(name = "Supplier", description = "Endpoints para administrar proveedores")
 @CrossOrigin(origins = "https://localhost:4200")
 public class SupplierController {
 
@@ -32,23 +29,28 @@ public class SupplierController {
     }
 
     // ---------------------------------------------------------
+    // MAPPERS
+    // ---------------------------------------------------------
+    private SupplierResponseDto toDto(Supplier s) {
+        return new SupplierResponseDto(
+                s.getId(),
+                s.getName(),
+                s.getEmail(),
+                s.getPhone()
+        );
+    }
+
+    // ---------------------------------------------------------
     // GET ALL
     // ---------------------------------------------------------
-    @Operation(
-            summary = "Obtener todos los proveedores",
-            description = "Devuelve un listado con todos los proveedores registrados."
-    )
+    @Operation(summary = "Obtener todos los proveedores")
     @ApiResponse(responseCode = "200", description = "Listado obtenido correctamente")
     @GetMapping
     public ResponseEntity<List<SupplierResponseDto>> getAll() {
+
         List<SupplierResponseDto> response = supplierService.getAll()
                 .stream()
-                .map(s -> new SupplierResponseDto(
-                        s.getId(),
-                        s.getName(),
-                        s.getEmail(),
-                        s.getPhone()
-                ))
+                .map(this::toDto)
                 .toList();
 
         return ResponseEntity.ok(response);
@@ -57,37 +59,24 @@ public class SupplierController {
     // ---------------------------------------------------------
     // GET BY ID
     // ---------------------------------------------------------
-    @Operation(
-            summary = "Obtener proveedor por ID",
-            description = "Devuelve un proveedor en base a su identificador."
-    )
+    @Operation(summary = "Obtener proveedor por ID")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Proveedor encontrado"),
             @ApiResponse(responseCode = "404", description = "No existe un proveedor con ese ID")
     })
     @GetMapping("/{id}")
     public ResponseEntity<SupplierResponseDto> getById(@PathVariable Long id) {
+
         Supplier s = supplierService.getById(id);
-
-        SupplierResponseDto dto = new SupplierResponseDto(
-                s.getId(),
-                s.getName(),
-                s.getEmail(),
-                s.getPhone()
-        );
-
-        return ResponseEntity.ok(dto);
+        return ResponseEntity.ok(toDto(s));
     }
 
     // ---------------------------------------------------------
     // CREATE
     // ---------------------------------------------------------
-    @Operation(
-            summary = "Crear un nuevo proveedor",
-            description = "Registra un nuevo proveedor utilizando los datos enviados."
-    )
+    @Operation(summary = "Crear un nuevo proveedor")
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Proveedor creado exitosamente"),
+            @ApiResponse(responseCode = "201", description = "Proveedor creado"),
             @ApiResponse(responseCode = "400", description = "Datos inválidos")
     })
     @PostMapping
@@ -95,63 +84,31 @@ public class SupplierController {
             @Valid @RequestBody SupplierRequestDto request
     ) {
         Supplier saved = supplierService.createFromDto(request);
-
-        SupplierResponseDto response = new SupplierResponseDto(
-                saved.getId(),
-                saved.getName(),
-                saved.getEmail(),
-                saved.getPhone()
-        );
-
-        return ResponseEntity.status(201).body(response);
+        return ResponseEntity.status(201).body(toDto(saved));
     }
-
 
     // ---------------------------------------------------------
     // UPDATE
     // ---------------------------------------------------------
-    @Operation(
-            summary = "Actualizar un proveedor",
-            description = "Modifica los datos de un proveedor existente."
-    )
+    @Operation(summary = "Actualizar proveedor")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Proveedor actualizado correctamente"),
-            @ApiResponse(responseCode = "404", description = "No existe un proveedor con ese ID")
+            @ApiResponse(responseCode = "200", description = "Proveedor actualizado"),
+            @ApiResponse(responseCode = "404", description = "Proveedor no encontrado")
     })
     @PutMapping("/{id}")
     public ResponseEntity<SupplierResponseDto> update(
             @PathVariable Long id,
             @Valid @RequestBody SupplierRequestDto request
     ) {
-
-        Supplier updated = new Supplier();
-        updated.setName(request.getName());
-        updated.setEmail(request.getEmail());
-        updated.setPhone(request.getPhone());
-
-        Supplier saved = supplierService.update(id, updated);
-
-        SupplierResponseDto response = new SupplierResponseDto(
-                saved.getId(),
-                saved.getName(),
-                saved.getEmail(),
-                saved.getPhone()
-        );
-
-        return ResponseEntity.ok(response);
+        Supplier updated = supplierService.updateFromDto(id, request);
+        return ResponseEntity.ok(toDto(updated));
     }
 
     // ---------------------------------------------------------
     // DELETE
     // ---------------------------------------------------------
-    @Operation(
-            summary = "Eliminar un proveedor",
-            description = "Elimina un proveedor existente usando su ID."
-    )
-    @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "Proveedor eliminado correctamente"),
-            @ApiResponse(responseCode = "404", description = "No existe un proveedor con ese ID")
-    })
+    @Operation(summary = "Eliminar proveedor")
+    @ApiResponse(responseCode = "204", description = "Proveedor eliminado correctamente")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         supplierService.delete(id);

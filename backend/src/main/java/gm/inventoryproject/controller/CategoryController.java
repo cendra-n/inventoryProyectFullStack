@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,10 @@ import java.util.List;
 @RestController
 @RequestMapping("inventory-app/categories")
 @RequiredArgsConstructor
-@Tag(name = "Category", description = "Endpoints para manejar las categorías de los productos")
+@Tag(
+        name = "Category",
+        description = "Endpoints para manejar las categorías de los productos"
+)
 @CrossOrigin(origins = "https://localhost:4200")
 public class CategoryController {
 
@@ -53,10 +57,12 @@ public class CategoryController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "Categoría creada exitosamente"),
-            @ApiResponse(responseCode = "400", description = "Datos inválidos")
+            @ApiResponse(responseCode = "400", description = "Datos inválidos o nombre duplicado")
     })
     @PostMapping
-    public ResponseEntity<CategoryResponseDto> create(@RequestBody CategoryRequestDto dto) {
+    public ResponseEntity<CategoryResponseDto> create(
+            @Valid @RequestBody CategoryRequestDto dto
+    ) {
         Category saved = categoryService.create(toEntity(dto));
         return ResponseEntity.status(201).body(toResponseDto(saved));
     }
@@ -75,6 +81,7 @@ public class CategoryController {
                 .stream()
                 .map(this::toResponseDto)
                 .toList();
+
         return ResponseEntity.ok(list);
     }
 
@@ -121,12 +128,13 @@ public class CategoryController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Categoría actualizada correctamente"),
+            @ApiResponse(responseCode = "400", description = "Datos inválidos o nombre duplicado"),
             @ApiResponse(responseCode = "404", description = "No existe la categoría a actualizar")
     })
     @PutMapping("/{id}")
     public ResponseEntity<CategoryResponseDto> update(
             @PathVariable Long id,
-            @RequestBody CategoryRequestDto dto
+            @Valid @RequestBody CategoryRequestDto dto
     ) {
         Category updatedData = toEntity(dto);
         Category updated = categoryService.update(id, updatedData);

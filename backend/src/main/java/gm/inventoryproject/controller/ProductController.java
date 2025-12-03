@@ -111,11 +111,11 @@ public class ProductController {
             @PathVariable Long id,
             @RequestBody @Valid ProductRequestDto dto) {
 
-        Product updatedEntity = toEntity(dto);
-        Product updated = productService.update(id, updatedEntity);
+        Product updated = productService.update(id, dto);
 
         return ResponseEntity.ok(toDto(updated));
     }
+
 
     // -------------------------------------------------------
     @Operation(summary = "Eliminar un producto")

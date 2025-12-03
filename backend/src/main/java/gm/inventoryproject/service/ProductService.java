@@ -1,76 +1,110 @@
 package gm.inventoryproject.service;
 
+import gm.inventoryproject.dto.product.ProductRequestDto;
 import gm.inventoryproject.exceptions.DuplicateFieldException;
 import gm.inventoryproject.exceptions.ResourceNotFoundException;
+import gm.inventoryproject.model.Category;
 import gm.inventoryproject.model.Product;
+import gm.inventoryproject.model.Supplier;
 import gm.inventoryproject.repository.ProductRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ProductService implements IProductService {
 
     private final ProductRepository productRepository;
+    private final ICategoryService categoryService;
+    private final ISupplierService supplierService;
 
-    public ProductService(ProductRepository productRepository) {
-        this.productRepository = productRepository;
-    }
-
+    // ---------------------------------------------------------
+    // GET ALL
+    // ---------------------------------------------------------
     @Override
     @Transactional(readOnly = true)
     public List<Product> getAll() {
         return productRepository.findAll();
     }
 
+    // ---------------------------------------------------------
+    // GET BY ID
+    // ---------------------------------------------------------
     @Override
     @Transactional(readOnly = true)
     public Product getById(Long id) {
         return productRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con id: " + id));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("No se encontró un producto con ID: " + id));
     }
 
+    // ---------------------------------------------------------
+    // GET BY NAME
+    // ---------------------------------------------------------
     @Override
     @Transactional(readOnly = true)
     public Product findByName(String name) {
         return productRepository.findByName(name)
-                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con nombre: " + name));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("No se encontró un producto con nombre: " + name));
     }
 
+    // ---------------------------------------------------------
+    // CREATE
+    // ---------------------------------------------------------
     @Override
     @Transactional
-    public Product create(Product product) {
+    public Product create(Product entity) {
 
-        if (productRepository.existsByName(product.getName())) {
-            throw new DuplicateFieldException("El nombre del producto ya está registrado");
+        // Validar duplicado por nombre
+        if (productRepository.existsByName(entity.getName())) {
+            throw new DuplicateFieldException("Ya existe un producto con el nombre: " + entity.getName());
         }
 
-        return productRepository.save(product);
+        return productRepository.save(entity);
     }
 
-
+    // ---------------------------------------------------------
+    // UPDATE
+    // ---------------------------------------------------------
     @Override
     @Transactional
-    public Product update(Long id, Product updatedProduct) {
+    public Product update(Long id, ProductRequestDto dto) {
+
         Product existing = getById(id);
 
-        existing.setName(updatedProduct.getName());
-        existing.setDescription(updatedProduct.getDescription());
-        existing.setPrice(updatedProduct.getPrice());
-        existing.setStock(updatedProduct.getStock());
-        existing.setCategory(updatedProduct.getCategory());
-        existing.setSupplier(updatedProduct.getSupplier());
+        // Validar duplicado de nombre si cambió
+        if (!existing.getName().equalsIgnoreCase(dto.getName())
+                && productRepository.existsByName(dto.getName())) {
+            throw new DuplicateFieldException("Ya existe un producto con el nombre: " + dto.getName());
+        }
+
+        // Setear campos del DTO
+        existing.setName(dto.getName());
+        existing.setDescription(dto.getDescription());
+        existing.setPrice(dto.getPrice());
+        existing.setStock(dto.getStock());
+
+        // Reasignar relaciones
+        Category category = categoryService.getById(dto.getCategoryId());
+        Supplier supplier = supplierService.getById(dto.getSupplierId());
+
+        existing.setCategory(category);
+        existing.setSupplier(supplier);
 
         return productRepository.save(existing);
     }
 
+    // ---------------------------------------------------------
+    // DELETE
+    // ---------------------------------------------------------
     @Override
     @Transactional
     public void delete(Long id) {
-        if (!productRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Producto no encontrado con id: " + id);
-        }
-        productRepository.deleteById(id);
+        Product p = getById(id);
+        productRepository.delete(p);
     }
 }

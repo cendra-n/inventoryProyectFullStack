@@ -78,8 +78,8 @@ public class InventoryMovementController {
     }
 
     // -------------------------------------------
-    // CREATE
-    // -------------------------------------------
+// CREATE
+// -------------------------------------------
     @Operation(summary = "Registrar un nuevo movimiento de inventario")
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "Movimiento creado exitosamente"),
@@ -89,17 +89,11 @@ public class InventoryMovementController {
     public ResponseEntity<InventoryMovementResponseDto> create(
             @Valid @RequestBody InventoryMovementRequestDto request
     ) {
-        Product product = productService.getById(request.getProductId());
-
-        InventoryMovement movement = new InventoryMovement();
-        movement.setQuantity(request.getQuantity());
-        movement.setType(InventoryMovement.MovementType.valueOf(request.getType()));
-        movement.setProduct(product);
-
-        InventoryMovement saved = movementService.create(movement);
-
+        InventoryMovement saved = movementService.createFromDto(request);
         return ResponseEntity.status(201).body(toResponse(saved));
     }
+
+
 
     // -------------------------------------------
     // DELETE

@@ -7,7 +7,9 @@ import lombok.*;
 @Table(name = "categories")
 @Getter
 @Setter
-@NoArgsConstructor @AllArgsConstructor @Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @ToString(onlyExplicitlyIncluded = true)
 public class Category {
 
@@ -18,8 +20,9 @@ public class Category {
 
     @Column(nullable = false, unique = true)
     @ToString.Include
-    private String name; // nombre
+    private String name;
 
     @Column(columnDefinition = "TEXT")
-    private String description; // descripcion
+    private String description;   // ✔️ ESTE CAMPO DEBE EXISTIR
 }
+

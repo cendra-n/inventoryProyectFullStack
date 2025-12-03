@@ -21,5 +21,9 @@ public interface IInventoryMovementService {
     List<InventoryMovement> getByDateRange(LocalDateTime start, LocalDateTime end);
 
     List<InventoryMovement> getByProductAndDate(Long productId, LocalDateTime start, LocalDateTime end);
+
+    // NUEVO: Crear desde DTO (firma pública)
+    InventoryMovement createFromDto(gm.inventoryproject.dto.inventorymovement.InventoryMovementRequestDto dto);
 }
+
 

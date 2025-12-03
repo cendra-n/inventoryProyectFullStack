@@ -1,5 +1,6 @@
 package gm.inventoryproject.service;
 
+import gm.inventoryproject.dto.supplier.SupplierRequestDto;
 import gm.inventoryproject.model.Supplier;
 
 import java.util.List;
@@ -12,13 +13,9 @@ public interface ISupplierService {
 
     Supplier findByName(String name);
 
-    Supplier create(Supplier supplier);
+    Supplier createFromDto(SupplierRequestDto dto);
 
-    Supplier update(Long id, Supplier supplier);
+    Supplier updateFromDto(Long id, SupplierRequestDto dto);
 
     void delete(Long id);
-
-    Supplier createFromDto(gm.inventoryproject.dto.supplier.SupplierRequestDto dto);
 }
-
-
