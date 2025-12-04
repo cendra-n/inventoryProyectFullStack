@@ -1,5 +1,6 @@
 package gm.inventoryproject.service;
 
+import gm.inventoryproject.dto.inventorymovement.InventoryMovementRequestDto;
 import gm.inventoryproject.exceptions.ResourceNotFoundException;
 import gm.inventoryproject.model.InventoryMovement;
 import gm.inventoryproject.model.Product;
@@ -36,24 +37,70 @@ public class InventoryMovementService implements IInventoryMovementService {
                 .orElseThrow(() -> new ResourceNotFoundException("Movement not found with id: " + id));
     }
 
+
     @Override
     @Transactional
-    public InventoryMovement create(InventoryMovement movement) {
-        // Si usas createFromDto en todos los lugares, este método puede seguir existiendo para usos internos
-        if (movement.getProduct() == null || movement.getProduct().getId() == null) {
-            throw new IllegalArgumentException("Product must be provided");
-        }
-        // Asegurar que el producto exista y se adjunte la entidad gestionada
-        Product product = productRepository.findById(movement.getProduct().getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + movement.getProduct().getId()));
-        movement.setProduct(product);
+    public InventoryMovement createFromDto(InventoryMovementRequestDto dto) {
 
-        if (movement.getDate() == null) {
-            movement.setDate(LocalDateTime.now());
+        // 1) Validar cantidad
+        if (dto.getQuantity() == null || dto.getQuantity() <= 0) {
+            throw new IllegalArgumentException("La cantidad debe ser mayor a 0");
         }
+
+        // 2) Obtener producto
+        Product product = productRepository.findById(dto.getProductId())
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Producto no encontrado con id: " + dto.getProductId()
+                ));
+
+        // 3) Validar tipo de movimiento
+        InventoryMovement.MovementType type;
+        try {
+            type = InventoryMovement.MovementType.valueOf(dto.getType());
+        } catch (IllegalArgumentException ex) {
+            throw new IllegalArgumentException("Tipo de movimiento inválido. Debe ser IN o OUT");
+        }
+
+        // 4) Lógica de stock
+        if (type == InventoryMovement.MovementType.IN) {
+            // entrada → sumar
+            product.setStock(product.getStock() + dto.getQuantity());
+        }
+
+        if (type == InventoryMovement.MovementType.OUT) {
+
+            // No permitir OUT con stock 0
+            if (product.getStock() == 0) {
+                throw new IllegalArgumentException(
+                        "El producto no tiene stock disponible para realizar una salida"
+                );
+            }
+
+            // No permitir restar más de lo que hay
+            if (product.getStock() < dto.getQuantity()) {
+                throw new IllegalArgumentException(
+                        "Stock insuficiente. Disponible: " + product.getStock()
+                );
+            }
+
+            // salida → restar
+            product.setStock(product.getStock() - dto.getQuantity());
+        }
+
+        // Guardar nuevo stock
+        productRepository.save(product);
+
+        // 5) Registrar movimiento
+        InventoryMovement movement = InventoryMovement.builder()
+                .quantity(dto.getQuantity())
+                .type(type)
+                .product(product)
+                .date(LocalDateTime.now())
+                .build();
 
         return movementRepository.save(movement);
     }
+
 
     @Override
     @Transactional
@@ -87,34 +134,5 @@ public class InventoryMovementService implements IInventoryMovementService {
         return movementRepository.findByProductIdAndDateBetween(productId, start, end);
     }
 
-    // ================================
-    // NUEVO: crear desde DTO (seguro)
-    // ================================
-    @Override
-    @Transactional
-    public InventoryMovement createFromDto(gm.inventoryproject.dto.inventorymovement.InventoryMovementRequestDto dto) {
 
-        // 1) Validar y obtener producto
-        Product product = productRepository.findById(dto.getProductId())
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + dto.getProductId()));
-
-        // 2) Convertir tipo (String -> Enum) de forma robusta
-        InventoryMovement.MovementType type;
-        try {
-            type = InventoryMovement.MovementType.valueOf(dto.getType());
-        } catch (IllegalArgumentException ex) {
-            throw new IllegalArgumentException("Tipo de movimiento inválido. Debe ser IN o OUT");
-        }
-
-        // 3) Construir entidad
-        InventoryMovement movement = InventoryMovement.builder()
-                .quantity(dto.getQuantity())
-                .type(type)
-                .product(product)
-                .date(LocalDateTime.now())
-                .build();
-
-        // 4) Guardar
-        return movementRepository.save(movement);
-    }
 }
