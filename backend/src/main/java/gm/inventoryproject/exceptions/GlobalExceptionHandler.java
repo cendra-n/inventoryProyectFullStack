@@ -1,5 +1,6 @@
 package gm.inventoryproject.exceptions;
 
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -72,12 +73,42 @@ public class GlobalExceptionHandler {
 
     // -----------------------------------------------------------
     // 5) ERROR GENERAL (500)
+    //  ERRORES DE VALIDACIÓN DE LÓGICA DE NEGOCIO (400)
+    //    Ej: stock insuficiente, cantidad inválida, tipo OUT incorrecto, etc.
+    // -----------------------------------------------------------
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<?> handleIllegalArgument(IllegalArgumentException ex) {
+        return buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+    //------------------------------------------------
+    // 6) ERROR POR ENVIO DE NÚMEROS CON COMA EL INGRESO/EGRESO
+    // EJ: out : 2,30
+    //--------------------------------
+
+    @ExceptionHandler(com.fasterxml.jackson.databind.exc.InvalidFormatException.class)
+    public ResponseEntity<?> handleInvalidFormat(InvalidFormatException ex) {
+
+        String field = "valor enviado";
+
+        if (!ex.getPath().isEmpty()) {
+            field = ex.getPath().get(0).getFieldName();
+        }
+
+        String message = "El campo '" + field + "' solo acepta números enteros. No se permiten comas ni decimales.";
+
+        return buildResponse(HttpStatus.BAD_REQUEST, message);
+    }
+
+    // -----------------------------------------------------------
+    // 7) ERROR GENERAL (500)
     // -----------------------------------------------------------
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleGeneral(Exception ex) {
         return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR,
                 "Ocurrió un error inesperado. Por favor, contacte al administrador.");
     }
+
 
     // -----------------------------------------------------------
     // UTILIDAD PARA FORMATEAR RESPUESTAS
