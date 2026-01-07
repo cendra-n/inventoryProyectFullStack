@@ -1,39 +1,47 @@
-<div class="container text-center">
-  <div class="container text-center">
-    <p>CN inventory App</p>
-  </div>
+<div class="container mt-4">
+  <h2 class="text-center">Lista de productos</h2>
 
-  <table class="table">
+  <button class="btn btn-secondary mb-3" (click)="goBackToProducts()">
+    ⬅ Atrás
+  </button>
+
+  <table class="table table-dark table-striped table-hover">
     <thead>
       <tr>
-        <th scope="col">Id</th>
-        <th scope="col">Nombre</th>
-        <th scope="col">Descripción</th>
-        <th scope="col">Precio</th>
-        <th scope="col">Stock</th>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Descripción</th>
+        <th>Precio</th>
+        <th>Stock</th>
+        <th class="text-center">Acciones</th>
       </tr>
     </thead>
+
     <tbody>
-      <tr>
-        <th scope="row">1</th>
-        <td>Mark</td>
-        <td>Otto</td>
-        <td>mdo</td>
-        <td>aaa</td>
-      </tr>
-      <tr>
-        <th scope="row">2</th>
-        <td>Jacob</td>
-        <td>Thornton</td>
-        <td>fat</td>
-        <td>aaa</td>
-      </tr>
-      <tr>
-        <th scope="row">3</th>
-        <td>John</td>
-        <td>Doe</td>
-        <td>social</td>
-        <td>aaa</td>
+      <tr *ngFor="let product of products">
+        <td>{{ product.id }}</td>
+        <td>{{ product.name }}</td>
+        <td>{{ product.description }}</td>
+        <td>{{ product.price }}</td>
+        <td>{{ product.stock }}</td>
+
+        <td class="text-center">
+          <button
+            class="btn btn-warning btn-sm me-2"
+            (click)="editProduct(product.id)"
+            title="Editar"
+          >
+            ✏️
+          </button>
+
+          <button
+            class="btn btn-danger btn-sm"
+            (click)="deleteProduct(product.id)"
+            title="Eliminar"
+          >
+            🗑
+          </button>
+        </td>
       </tr>
     </tbody>
   </table>

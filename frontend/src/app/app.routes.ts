@@ -1,13 +1,17 @@
 import { Routes } from '@angular/router';
 import { Home } from './home/home';
+import { ProductHome } from './product-home/product-home';
 import { ProductList } from './product-list/product-list';
-import { CategoryList } from './category-list/category-list';
-import { SupplierList } from './supplier-list/supplier-list';
 
 export const routes: Routes = [
   { path: '', component: Home },
-  { path: 'products', component: ProductList },
-  { path: 'categories', component: CategoryList },
-  { path: 'suppliers', component: SupplierList }
-];
 
+  { path: 'products', component: ProductHome },
+  { path: 'products/list', component: ProductList },
+  //{ path: 'products/edit/:id', component: ProductForm }
+
+
+  // después:
+  // categories
+  // suppliers
+];
