@@ -19,7 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/inventory-app/suppliers")
 @Tag(name = "Supplier", description = "Endpoints para administrar proveedores")
-@CrossOrigin(origins = "https://localhost:4200")
+@CrossOrigin(origins = "http://localhost:4200")
 public class SupplierController {
 
     private final ISupplierService supplierService;

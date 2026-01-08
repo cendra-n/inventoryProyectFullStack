@@ -1,33 +1,41 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule, NgFor } from '@angular/common';
 import { Router } from '@angular/router';
+import { ProductService, Product } from '../services/product.service';
 
 @Component({
   selector: 'app-product-list',
   standalone: true,
-  imports: [CommonModule],
+  imports: [
+    CommonModule,
+    NgFor   // 👈 ESTO ES LO QUE FALTABA
+  ],
   templateUrl: './product-list.html'
 })
-export class ProductList {
+export class ProductList implements OnInit {
 
-  products = [
-    {
-      id: 1,
-      name: 'Laptop',
-      description: 'Laptop Lenovo ThinkPad',
-      price: 1200,
-      stock: 10
-    },
-    {
-      id: 2,
-      name: 'Mouse',
-      description: 'Mouse inalámbrico',
-      price: 25,
-      stock: 50
-    }
-  ];
+  products: Product[] = [];
 
-  constructor(private router: Router) {}
+  constructor(
+    private productService: ProductService,
+    private router: Router
+  ) {}
+
+  ngOnInit(): void {
+    this.loadProducts();
+  }
+
+  loadProducts() {
+    this.productService.getAll().subscribe({
+      next: (data) => {
+        console.log('DATA:', data);
+        this.products = data;
+      },
+      error: (err) => {
+        console.error('Error al cargar productos', err);
+      }
+    });
+  }
 
   goBackToProducts() {
     this.router.navigate(['/products']);
@@ -35,13 +43,9 @@ export class ProductList {
 
   editProduct(id: number) {
     console.log('Editar producto con id:', id);
-    // más adelante: this.router.navigate(['/products/edit', id]);
   }
 
   deleteProduct(id: number) {
-    const confirmed = confirm('¿Seguro que deseas eliminar este producto?');
-    if (confirmed) {
-      console.log('Eliminar producto con id:', id);
-    }
+    console.log('Eliminar producto con id:', id);
   }
 }

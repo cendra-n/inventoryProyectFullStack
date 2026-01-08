@@ -25,7 +25,7 @@ import java.util.List;
         name = "Category",
         description = "Endpoints para manejar las categorías de los productos"
 )
-@CrossOrigin(origins = "https://localhost:4200")
+@CrossOrigin(origins = "http://localhost:4200")
 public class CategoryController {
 
     private final ICategoryService categoryService;

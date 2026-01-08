@@ -23,7 +23,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/inventory-app/movements")
 @Tag(name = "inventory movements", description = "Endpoints para gestionar movimientos de inventario")
-@CrossOrigin(origins = "https://localhost:4200")
+@CrossOrigin(origins = "http://localhost:4200")
 public class InventoryMovementController {
 
     private final IInventoryMovementService movementService;

@@ -22,7 +22,7 @@ import java.util.List;
 @RequestMapping("inventory-app/products")
 @RequiredArgsConstructor
 @Tag(name = "Product", description = "Endpoints para manejar productos")
-@CrossOrigin(origins = "https://localhost:4200")
+@CrossOrigin(origins = "http://localhost:4200")
 public class ProductController {
 
     private final IProductService productService;
