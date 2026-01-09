@@ -1,15 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule, NgFor } from '@angular/common';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { ProductService, Product } from '../services/product.service';
+
+import { ProductService } from '../services/product.service';
+import { Product } from '../model/product.model';
 
 @Component({
   selector: 'app-product-list',
   standalone: true,
-  imports: [
-    CommonModule,
-    NgFor   // 👈 ESTO ES LO QUE FALTABA
-  ],
+  imports: [CommonModule],
   templateUrl: './product-list.html'
 })
 export class ProductList implements OnInit {
@@ -18,34 +17,51 @@ export class ProductList implements OnInit {
 
   constructor(
     private productService: ProductService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
     this.loadProducts();
   }
 
-  loadProducts() {
+  private loadProducts(): void {
     this.productService.getAll().subscribe({
       next: (data) => {
-        console.log('DATA:', data);
         this.products = data;
+        this.cdr.detectChanges(); // 🔥 CLAVE PARA QUE SE RENDERICE
       },
-      error: (err) => {
-        console.error('Error al cargar productos', err);
+      error: (error) => {
+        console.error('Error al cargar productos', error);
       }
     });
   }
 
-  goBackToProducts() {
+  goBackToProducts(): void {
     this.router.navigate(['/products']);
   }
 
-  editProduct(id: number) {
-    console.log('Editar producto con id:', id);
+  editProduct(id: number): void {
+    this.router.navigate(['/products/edit', id]);
   }
 
-  deleteProduct(id: number) {
-    console.log('Eliminar producto con id:', id);
+
+  deleteProduct(id: number): void {
+    const confirmed = confirm('¿Seguro que deseas eliminar este producto?');
+
+    if (!confirmed) return;
+
+    this.productService.delete(id).subscribe({
+      next: () => {
+        alert('Producto eliminado correctamente');
+        this.loadProducts(); // 🔥 refresca la tabla
+      },
+      error: (err) => {
+        console.error(err);
+        alert('Error al eliminar el producto');
+      }
+    });
   }
+
+
 }

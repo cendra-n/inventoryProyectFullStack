@@ -4,8 +4,6 @@
   <button class="btn btn-secondary mb-3" (click)="goBackToProducts()">
     ⬅ Atrás
   </button>
-  
-<h1 style="color: red">PRODUCT LIST HTML TEST</h1>
 
   <table class="table table-dark table-striped table-hover">
     <thead>
@@ -28,21 +26,18 @@
         <td>{{ product.stock }}</td>
 
         <td class="text-center">
-          <button
-            class="btn btn-warning btn-sm me-2"
-            (click)="editProduct(product.id)"
-            title="Editar"
-          >
-            ✏️
+           <button
+              class="btn btn-warning btn-sm me-2"
+             (click)="editProduct(product.id)">
+             ✏️
           </button>
 
           <button
             class="btn btn-danger btn-sm"
-            (click)="deleteProduct(product.id)"
-            title="Eliminar"
-          >
+            (click)="deleteProduct(product.id)">
             🗑
-          </button>
+         </button>
+
         </td>
       </tr>
     </tbody>
