@@ -16,6 +16,11 @@ export class ProductService {
     return this.http.get<Product[]>(this.apiUrl);
   }
 
+  create(product: Partial<Product>) {
+    return this.http.post<Product>(this.apiUrl, product);
+  }
+
+
   getById(id: number): Observable<Product> {
     return this.http.get<Product>(`${this.apiUrl}/${id}`);
   }
