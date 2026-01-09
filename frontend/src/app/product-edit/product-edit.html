@@ -1,33 +1,113 @@
 <div class="container mt-4" *ngIf="product">
   <h2 class="text-center">Editar producto</h2>
+  <hr>
+   <button class="btn btn-secondary mb-3" (click)="goBackToProducts()">
+    ⬅ Atrás
+  </button>
 
-  <form class="mt-4">
+  <form #form="ngForm" class="mt-4" (ngSubmit)="save()">
 
+    <!-- NOMBRE -->
     <div class="mb-3">
       <label class="form-label">Nombre</label>
-      <input class="form-control" [(ngModel)]="product.name" name="name">
+      <input
+        class="form-control"
+        [(ngModel)]="product.name"
+        name="name"
+        required
+        minlength="2"
+        maxlength="40"
+        pattern="^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ ]+$"
+        #name="ngModel"
+      >
+      <div class="text-danger" *ngIf="name.invalid && name.touched">
+        <small *ngIf="name.errors?.['required']">El nombre es obligatorio</small>
+        <small *ngIf="name.errors?.['minlength']">Mínimo 2 caracteres</small>
+        <small *ngIf="name.errors?.['maxlength']">Máximo 40 caracteres</small>
+        <small *ngIf="name.errors?.['pattern']">Solo letras y números</small>
+      </div>
     </div>
 
+    <!-- DESCRIPCIÓN -->
     <div class="mb-3">
       <label class="form-label">Descripción</label>
-      <input class="form-control" [(ngModel)]="product.description" name="description">
+      <input
+        class="form-control"
+        [(ngModel)]="product.description"
+        name="description"
+        required
+        maxlength="240"
+        pattern="^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ ]+$"
+        #description="ngModel"
+      >
+      <div class="text-danger" *ngIf="description.invalid && description.touched">
+        <small *ngIf="description.errors?.['required']">La descripción es obligatoria</small>
+        <small *ngIf="description.errors?.['maxlength']">Máximo 240 caracteres</small>
+      </div>
     </div>
 
+    <!-- PRECIO -->
     <div class="mb-3">
       <label class="form-label">Precio</label>
-      <input type="number" class="form-control" [(ngModel)]="product.price" name="price">
+      <input
+        type="number"
+        class="form-control"
+        [(ngModel)]="product.price"
+        name="price"
+        required
+        min="0.01"
+        step="0.01"
+        #price="ngModel"
+      >
     </div>
 
+    <!-- STOCK -->
     <div class="mb-3">
       <label class="form-label">Stock</label>
-      <input type="number" class="form-control" [(ngModel)]="product.stock" name="stock">
+      <input
+        type="number"
+        class="form-control"
+        [(ngModel)]="product.stock"
+        name="stock"
+        required
+        min="0"
+        #stock="ngModel"
+      >
     </div>
 
+    <!-- CATEGORÍA -->
+    <div class="mb-3">
+      <label class="form-label">Categoría</label>
+      <select
+        class="form-select"
+        [(ngModel)]="product.categoryId"
+        name="categoryId"
+        required>
+        <option *ngFor="let c of categories" [ngValue]="c.id">
+          {{ c.name }}
+        </option>
+      </select>
+    </div>
+
+    <!-- PROVEEDOR -->
+    <div class="mb-3">
+      <label class="form-label">Proveedor</label>
+      <select
+        class="form-select"
+        [(ngModel)]="product.supplierId"
+        name="supplierId"
+        required>
+        <option *ngFor="let s of suppliers" [ngValue]="s.id">
+          {{ s.name }}
+        </option>
+      </select>
+    </div>
+
+    <!-- BOTONES -->
     <div class="d-flex gap-2">
-      <button type="button" class="btn btn-primary" (click)="save()">
+      <button type="submit" class="btn btn-primary" [disabled]="form.invalid">
         Guardar
       </button>
-
       <button type="button" class="btn btn-secondary" (click)="cancel()">
         Cancelar
       </button>
@@ -35,4 +115,3 @@
 
   </form>
 </div>
-

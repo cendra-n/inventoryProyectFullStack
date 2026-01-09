@@ -1,62 +1,176 @@
 <div class="container mt-4">
   <h2 class="text-center">Crear producto</h2>
 
-  <form (ngSubmit)="save()">
+  <button class="btn btn-secondary mb-3" (click)="goBackToProducts()">
+    ⬅ Atrás
+  </button>
 
+  <form #form="ngForm" (ngSubmit)="save()">
+
+    <!-- NOMBRE -->
     <div class="mb-3">
       <label class="form-label">Nombre</label>
-      <input class="form-control" [(ngModel)]="product.name" name="name" required>
+
+      <input
+        class="form-control"
+        [(ngModel)]="product.name"
+        name="name"
+        required
+        minlength="2"
+        maxlength="40"
+        pattern="^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ ]+$"
+        #name="ngModel"
+      >
+
+      <div class="text-danger" *ngIf="name.invalid && name.touched">
+        <small *ngIf="name.errors?.['required']">
+          El nombre es obligatorio
+        </small>
+        <small *ngIf="name.errors?.['minlength']">
+          Debe tener al menos 2 caracteres
+        </small>
+        <small *ngIf="name.errors?.['maxlength']">
+          No puede superar los 40 caracteres
+        </small>
+        <small *ngIf="name.errors?.['pattern']">
+          Solo se permiten letras, números y espacios
+        </small>
+      </div>
     </div>
 
+    <!-- DESCRIPCIÓN -->
     <div class="mb-3">
       <label class="form-label">Descripción</label>
-      <input class="form-control" [(ngModel)]="product.description" name="description">
+
+      <input
+        class="form-control"
+        [(ngModel)]="product.description"
+        name="description"
+        required
+        maxlength="240"
+        pattern="^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ ]+$"
+        #description="ngModel"
+      >
+
+      <div class="text-danger" *ngIf="description.invalid && description.touched">
+        <small *ngIf="description.errors?.['required']">
+          La descripción es obligatoria
+        </small>
+        <small *ngIf="description.errors?.['maxlength']">
+          No puede superar los 240 caracteres
+        </small>
+        <small *ngIf="description.errors?.['pattern']">
+          Solo se permiten letras, números y espacios
+        </small>
+      </div>
     </div>
 
+    <!-- PRECIO -->
     <div class="mb-3">
       <label class="form-label">Precio</label>
-      <input type="number" class="form-control" [(ngModel)]="product.price" name="price">
+
+      <input
+        type="number"
+        class="form-control"
+        [(ngModel)]="product.price"
+        name="price"
+        required
+        min="0.01"
+        step="0.01"
+        #price="ngModel"
+      >
+
+      <div class="text-danger" *ngIf="price.invalid && price.touched">
+        <small *ngIf="price.errors?.['required']">
+          El precio es obligatorio
+        </small>
+        <small *ngIf="price.errors?.['min']">
+          El precio debe ser mayor que 0
+        </small>
+      </div>
     </div>
 
+    <!-- STOCK -->
     <div class="mb-3">
       <label class="form-label">Stock</label>
-      <input type="number" class="form-control" [(ngModel)]="product.stock" name="stock">
+
+      <input
+        type="number"
+        class="form-control"
+        [(ngModel)]="product.stock"
+        name="stock"
+        required
+        min="0"
+        #stock="ngModel"
+      >
+
+      <div class="text-danger" *ngIf="stock.invalid && stock.touched">
+        <small *ngIf="stock.errors?.['required']">
+          El stock es obligatorio
+        </small>
+        <small *ngIf="stock.errors?.['min']">
+          El stock no puede ser negativo
+        </small>
+      </div>
     </div>
 
+    <!-- CATEGORÍA -->
     <div class="mb-3">
       <label class="form-label">Categoría</label>
+
       <select
         class="form-select"
         [(ngModel)]="product.categoryId"
         name="categoryId"
-        required>
+        required
+        #category="ngModel"
+      >
         <option [ngValue]="null">Seleccione una categoría</option>
         <option *ngFor="let c of categories" [ngValue]="c.id">
           {{ c.name }}
         </option>
       </select>
+
+      <div class="text-danger" *ngIf="category.invalid && category.touched">
+        <small>La categoría es obligatoria</small>
+      </div>
     </div>
 
+    <!-- PROVEEDOR -->
     <div class="mb-3">
       <label class="form-label">Proveedor</label>
+
       <select
         class="form-select"
         [(ngModel)]="product.supplierId"
         name="supplierId"
-        required>
+        required
+        #supplier="ngModel"
+      >
         <option [ngValue]="null">Seleccione un proveedor</option>
         <option *ngFor="let s of suppliers" [ngValue]="s.id">
           {{ s.name }}
         </option>
       </select>
+
+      <div class="text-danger" *ngIf="supplier.invalid && supplier.touched">
+        <small>El proveedor es obligatorio</small>
+      </div>
     </div>
 
+    <!-- BOTONES -->
     <div class="d-flex gap-2">
-      <button type="submit" class="btn btn-success">
+      <button
+        type="submit"
+        class="btn btn-success"
+        [disabled]="form.invalid">
         Guardar
       </button>
 
-      <button type="button" class="btn btn-secondary" (click)="cancel()">
+      <button
+        type="button"
+        class="btn btn-secondary"
+        (click)="cancel()">
         Cancelar
       </button>
     </div>

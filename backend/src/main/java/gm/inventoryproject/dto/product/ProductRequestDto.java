@@ -10,11 +10,20 @@ import lombok.Setter;
 public class ProductRequestDto {
 
     @NotBlank(message = "El nombre no puede estar vacío")
-    @Size(min = 2, max = 80, message = "El nombre debe tener entre 2 y 80 caracteres")
+    @Size(min = 2, max = 40, message = "El nombre debe tener entre 2 y 40 caracteres")
+    @Pattern(
+            regexp = "^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ ]+$",
+            message = "El nombre solo puede contener letras, números y espacios"
+    )
     @Schema(description = "Nombre del producto", example = "Mouse inalámbrico")
     private String name;
 
+    @NotBlank(message = "La descripción no puede estar vacía")
     @Size(max = 240, message = "La descripción no puede superar los 240 caracteres")
+    @Pattern(
+            regexp = "^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ ]+$",
+            message = "La descripción solo puede contener letras, números y espacios"
+    )
     @Schema(description = "Descripción del producto", example = "Mouse óptico inalámbrico de 1600 DPI")
     private String description;
 

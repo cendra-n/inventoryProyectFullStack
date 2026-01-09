@@ -25,6 +25,17 @@ export class ProductService {
     return this.http.get<Product>(`${this.apiUrl}/${id}`);
   }
 
+  //aca estaba el seach viejo
+ 
+
+
+ searchByName(name: string) {
+   return this.http.get<Product>(
+   `${this.apiUrl}/name/${name}`
+  );
+}
+
+
   update(id: number, product: Product): Observable<Product> {
     return this.http.put<Product>(`${this.apiUrl}/${id}`, product);
   }

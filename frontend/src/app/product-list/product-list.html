@@ -4,6 +4,30 @@
   <button class="btn btn-secondary mb-3" (click)="goBackToProducts()">
     ⬅ Atrás
   </button>
+  <hr>
+
+  <div class="row mb-3">
+  <div class="col-md-6">
+    <input
+      type="text"
+      class="form-control"
+      placeholder="Buscar producto por nombre..."
+      [(ngModel)]="searchText"
+      (keyup.enter)="search()"
+    />
+  </div>
+
+  <div class="col-md-6 d-flex gap-2">
+    <button class="btn btn-primary" (click)="search()">
+      🔍 Buscar
+    </button>
+
+    <button class="btn btn-secondary" (click)="clearSearch()">
+      ❌ Limpiar
+    </button>
+  </div>
+</div>
+
 
   <table class="table table-dark table-striped table-hover">
     <thead>
@@ -25,20 +49,22 @@
         <td>{{ product.price }}</td>
         <td>{{ product.stock }}</td>
 
-        <td class="text-center">
-           <button
-              class="btn btn-warning btn-sm me-2"
-             (click)="editProduct(product.id)">
-             ✏️
+      <td class="text-center">
+        <div class="d-flex justify-content-center gap-2">
+          <button
+            class="btn btn-warning btn-sm"
+            (click)="editProduct(product.id)">
+            ✏️
           </button>
 
           <button
             class="btn btn-danger btn-sm"
             (click)="deleteProduct(product.id)">
-            🗑
-         </button>
+            🗑️
+          </button>
+        </div>
+      </td>
 
-        </td>
       </tr>
     </tbody>
   </table>

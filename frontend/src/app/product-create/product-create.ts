@@ -38,6 +38,10 @@ export class ProductCreate implements OnInit {
     private router: Router
   ) {}
 
+  goBackToProducts(): void {
+    this.router.navigate(['/products']);
+  }
+  
   ngOnInit(): void {
     this.categoryService.getAll().subscribe(data => this.categories = data);
     this.supplierService.getAll().subscribe(data => this.suppliers = data);
