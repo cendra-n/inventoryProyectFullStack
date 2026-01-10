@@ -95,13 +95,20 @@ public class ProductController {
     }
 
     // -------------------------------------------------------
-    @Operation(summary = "Obtener un producto por nombre")
+    @Operation(summary = "Buscar producto por nombre")
     @ApiResponse(responseCode = "200", description = "Producto encontrado")
-    @GetMapping("/name/{name}")
-    public ResponseEntity<ProductResponseDto> findByName(@PathVariable String name) {
-        Product p = productService.findByName(name);
-        return ResponseEntity.ok(toDto(p));
+    @GetMapping("/search")
+    public ResponseEntity<List<ProductResponseDto>> searchByName(
+            @RequestParam String name) {
+
+        List<ProductResponseDto> list = productService.searchByName(name)
+                .stream()
+                .map(this::toDto)
+                .toList();
+
+        return ResponseEntity.ok(list);
     }
+
 
     // -------------------------------------------------------
     @Operation(summary = "Actualizar un producto existente")

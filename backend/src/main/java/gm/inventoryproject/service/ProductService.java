@@ -46,11 +46,10 @@ public class ProductService implements IProductService {
     // ---------------------------------------------------------
     @Override
     @Transactional(readOnly = true)
-    public Product findByName(String name) {
-        return productRepository.findByName(name)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("No se encontró un producto con nombre: " + name));
+    public List<Product> searchByName(String name) {
+        return productRepository.findByNameContainingIgnoreCase(name);
     }
+
 
     // ---------------------------------------------------------
     // CREATE

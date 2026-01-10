@@ -11,7 +11,7 @@ public interface IProductService {
 
     Product getById(Long id);
 
-    Product findByName(String name);
+    List<Product> searchByName(String name);
 
     Product create(Product entity);
 

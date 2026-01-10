@@ -20,20 +20,18 @@ export class ProductService {
     return this.http.post<Product>(this.apiUrl, product);
   }
 
-
-  getById(id: number): Observable<Product> {
+  getById(id: number) {
     return this.http.get<Product>(`${this.apiUrl}/${id}`);
   }
 
-  //aca estaba el seach viejo
- 
 
+  searchByName(name: string) {
+    return this.http.get<Product[]>(
+      `${this.apiUrl}/search`,
+      { params: { name } }
+    );
+  }
 
- searchByName(name: string) {
-   return this.http.get<Product>(
-   `${this.apiUrl}/name/${name}`
-  );
-}
 
 
   update(id: number, product: Product): Observable<Product> {

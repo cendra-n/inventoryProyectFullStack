@@ -14,8 +14,10 @@ import { Product } from '../model/product.model';
 export class ProductList implements OnInit {
 
   products: Product[] = [];
-
+  allProducts: Product[] = [];
   searchText: string = '';
+  loading: boolean = false;
+
 
 
   constructor(
@@ -29,13 +31,18 @@ export class ProductList implements OnInit {
   }
 
   private loadProducts(): void {
-    this.productService.getAll().subscribe({
+  this.loading = true;
+
+  this.productService.getAll().subscribe({
       next: (data) => {
         this.products = data;
+        this.allProducts = data;
+        this.loading = false;
         this.cdr.detectChanges(); // 🔥 CLAVE PARA QUE SE RENDERICE
       },
-      error: (error) => {
-        console.error('Error al cargar productos', error);
+      error: (err) => {
+        console.error(err);
+        this.loading = false;
       }
     });
   }
@@ -49,20 +56,21 @@ export class ProductList implements OnInit {
   }
  
    
-
   search(): void {
-    if (!this.searchText.trim()) {
+    const text = this.searchText.trim();
+
+    if (!text) {
+      this.products = this.allProducts;
       return;
     }
 
-    this.productService.searchByName(this.searchText).subscribe({
-      next: (product) => {
-        // lo convertimos en array para reutilizar la tabla
-        this.products = [product];
+    this.productService.searchByName(text).subscribe({
+      next: (data) => {
+        this.products = data;
       },
       error: (err) => {
         console.error('Error en búsqueda', err);
-        alert('Producto no encontrado');
+        this.products = [];
       }
     });
   }
@@ -71,7 +79,6 @@ export class ProductList implements OnInit {
     this.searchText = '';
     this.loadProducts(); // vuelve a cargar todos
   }
-
 
 
   deleteProduct(id: number): void {
