@@ -51,35 +51,31 @@ export class ProductList implements OnInit {
     this.router.navigate(['/products']);
   }
 
-  editProduct(id: number): void {
-    this.router.navigate(['/products/edit', id]);
-  }
  
-   
   search(): void {
-    const text = this.searchText.trim();
-
-    if (!text) {
-      this.products = this.allProducts;
+    if (!this.searchText || this.searchText.trim() === '') {
+      this.loadProducts();
       return;
-    }
+  }
 
-    this.productService.searchByName(text).subscribe({
-      next: (data) => {
-        this.products = data;
-      },
-      error: (err) => {
-        console.error('Error en búsqueda', err);
+  this.productService.searchByName(this.searchText.trim())
+    .subscribe({
+      next: data => this.products = data,
+      error: () => {
         this.products = [];
+        alert('No se encontraron productos');
       }
     });
   }
 
   clearSearch(): void {
     this.searchText = '';
-    this.loadProducts(); // vuelve a cargar todos
+    this.loadProducts();
   }
 
+  editProduct(id: number): void {
+    this.router.navigate(['/products/edit', id]);
+  }
 
   deleteProduct(id: number): void {
     const confirmed = confirm('¿Seguro que deseas eliminar este producto?');
@@ -97,6 +93,26 @@ export class ProductList implements OnInit {
       }
     });
   }
+  
+  downloadPdf(): void {
+    this.productService.downloadProductsPdf().subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'ListaDeProductos.pdf';
+        a.click();
+
+        window.URL.revokeObjectURL(url);
+      },
+      error: (err) => {
+        console.error('Error al descargar PDF', err);
+        alert('Error al descargar el PDF');
+      }
+    });
+  }
+
 
 
 }

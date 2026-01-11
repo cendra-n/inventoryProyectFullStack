@@ -33,14 +33,25 @@ export class ProductService {
   }
 
 
-
   update(id: number, product: Product): Observable<Product> {
     return this.http.put<Product>(`${this.apiUrl}/${id}`, product);
   }
 
+
   delete(id: number): Observable<void> {
    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
+  
+
+  downloadProductsPdf() {
+    return this.http.get(
+      'http://localhost:8080/api/reports/products/pdf',
+      {
+        responseType: 'blob'
+      }
+    );
+  }
+
 
 
 }

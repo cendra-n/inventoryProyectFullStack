@@ -27,7 +27,7 @@ public class PdfReportService {
         document.open();
 
         // LOGO
-        Image logo = Image.getInstance(getClass().getResource("/static/CnInventorylogo.png"));
+        Image logo = Image.getInstance(getClass().getResource("/static/CnInventoryLogo.png"));
         logo.scaleToFit(90, 90);
         logo.setAlignment(Element.ALIGN_CENTER);
         document.add(logo);

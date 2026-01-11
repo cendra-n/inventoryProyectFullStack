@@ -4,35 +4,44 @@
   <button class="btn btn-secondary mb-3" (click)="goBackToProducts()">
     ⬅ Atrás
   </button>
+
+   <br>
+   
+  <button type="button" class="btn btn-success" (click)="downloadPdf()">
+      📄 Descargar PDF con la lista de productos cargados
+  </button>
+
   <hr>
 
-  <div class="row mb-3">
-  <div class="col-md-6">
-    <input
-      type="text"
-      class="form-control"
-      placeholder="Buscar producto por nombre..."
-      [(ngModel)]="searchText"
-      (keyup.enter)="search()"
-    />
-  </div>
+  <div class="d-flex gap-2 mb-3">
 
-  <div class="col-md-6 d-flex gap-2">
-    <button class="btn btn-primary" (mousedown)="search()">
-      🔍 Buscar
-    </button>
+  <input
+    type="text"
+    class="form-control"
+    placeholder="Buscar por nombre"
+    [(ngModel)]="searchText"
+    name="searchText">
 
-    <button class="btn btn-secondary" (click)="clearSearch()">
-      ❌ Limpiar
-    </button>
-  </div>
+  <button
+    type="button"
+    class="btn btn-primary"
+    (click)="search()">
+    Buscar
+  </button>
+
+  <button
+    type="button"
+    class="btn btn-secondary"
+    (click)="clearSearch()">
+    Limpiar
+  </button>
+
 </div>
+
 
 <div *ngIf="!loading && products.length === 0" class="alert alert-warning mt-3">
   No se encontraron productos
 </div>
-
-
 
   <table class="table table-dark table-striped table-hover">
     <thead>
