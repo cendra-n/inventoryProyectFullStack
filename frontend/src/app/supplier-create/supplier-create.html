@@ -1,0 +1,110 @@
+<div class="container mt-4">
+  <h2 class="text-center">Crear Proveedor</h2>
+  <hr>
+
+  <button class="btn btn-secondary mb-3" (click)="goBackToSuppliers()">
+    ⬅ Atrás
+  </button>
+
+  <form #supplierForm="ngForm" (ngSubmit)="save()" novalidate>
+
+    <!-- NOMBRE -->
+    <div class="mb-3">
+      <label class="form-label">Nombre</label>
+      <input
+        type="text"
+        class="form-control"
+        name="name"
+        [(ngModel)]="supplier.name"
+        required
+        minlength="2"
+        maxlength="30"
+        pattern="^[A-Za-zÁÉÍÓÚÑáéíóúñ ]+$"
+        #name="ngModel"
+      />
+
+      <div class="text-danger mt-1" *ngIf="name.invalid && name.touched">
+        <small *ngIf="name.errors?.['required']">
+          El nombre es obligatorio
+        </small>
+        <small *ngIf="name.errors?.['minlength']">
+          Mínimo 2 caracteres
+        </small>
+        <small *ngIf="name.errors?.['maxlength']">
+          Máximo 30 caracteres
+        </small>
+        <small *ngIf="name.errors?.['pattern']">
+          Solo letras y espacios
+        </small>
+      </div>
+    </div>
+
+    <!-- EMAIL -->
+    <div class="mb-3">
+      <label class="form-label">Email</label>
+      <input
+        type="email"
+        class="form-control"
+        name="email"
+        [(ngModel)]="supplier.email"
+        required
+        email
+        pattern="^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$"
+        #email="ngModel"
+      />
+
+      <div class="text-danger mt-1" *ngIf="email.invalid && email.touched">
+        <small *ngIf="email.errors?.['required']">
+          El email es obligatorio
+        </small>
+        <small *ngIf="email.errors?.['email'] || email.errors?.['pattern']">
+          Formato de email inválido
+        </small>
+      </div>
+    </div>
+
+    <!-- TELÉFONO -->
+    <div class="mb-3">
+      <label class="form-label">Teléfono</label>
+      <input
+        type="text"
+        class="form-control"
+        name="phone"
+        [(ngModel)]="supplier.phone"
+        required
+        pattern="^[0-9]{8,15}$"
+        #phone="ngModel"
+      />
+
+      <div class="text-danger mt-1" *ngIf="phone.invalid && phone.touched">
+        <small *ngIf="phone.errors?.['required']">
+          El teléfono es obligatorio
+        </small>
+        <small *ngIf="phone.errors?.['pattern']">
+          Debe contener solo números (8 a 15 dígitos)
+        </small>
+      </div>
+    </div>
+
+    <!-- BOTONES -->
+    <div class="d-flex gap-2">
+      <button
+        type="submit"
+        class="btn btn-success"
+        [disabled]="supplierForm.invalid"
+      >
+        Guardar
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-secondary"
+        (click)="cancel()"
+      >
+        Cancelar
+      </button>
+    </div>
+
+  </form>
+</div>
+

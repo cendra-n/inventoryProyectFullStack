@@ -10,12 +10,12 @@ import lombok.Setter;
 public class SupplierRequestDto {
 
     @NotBlank(message = "El nombre del proveedor no puede estar vacío")
-    @Size(min = 2, max = 30, message = "El nombre debe tener entre 2 y 30 caracteres")
+    @Size(min = 2, max = 30, message = "El nombre del proveedor debe tener entre 2 y 30 caracteres")
     @Pattern(
             regexp = "^[A-Za-zÁÉÍÓÚÑáéíóúñ ]+$",
             message = "El nombre solo puede contener letras y espacios"
     )
-    @Schema(description = "Nombre del proveedor", example = "Joaquin Gonzales")
+    @Schema(description = "Nombre del proveedor", example = "simeflat sa")
     private String name;
 
     @NotBlank(message = "El email no puede estar vacío")
@@ -24,7 +24,7 @@ public class SupplierRequestDto {
             regexp = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$",
             message = "Formato de email inválido"
     )
-    @Schema(description = "Email del proveedor", example = "Joaquin@simeflat.com")
+    @Schema(description = "Email del proveedor", example = "Joaquingo@simeflat.com")
     private String email;
 
 

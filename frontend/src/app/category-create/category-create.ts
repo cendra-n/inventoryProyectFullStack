@@ -44,4 +44,5 @@ export class CategoryCreate {
   cancel(): void {
     this.router.navigate(['/categories']);
   }
+  
 }

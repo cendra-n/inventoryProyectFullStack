@@ -5,6 +5,7 @@ import gm.inventoryproject.exceptions.CategoryHasProductsException;
 import gm.inventoryproject.exceptions.DuplicateFieldException;
 import gm.inventoryproject.exceptions.ResourceNotFoundException;
 import gm.inventoryproject.exceptions.SupplierHasProductsException;
+import gm.inventoryproject.model.Category;
 import gm.inventoryproject.model.Supplier;
 import gm.inventoryproject.repository.ProductRepository;
 import gm.inventoryproject.repository.SupplierRepository;
@@ -54,11 +55,8 @@ public class SupplierService implements ISupplierService {
     // ---------------------------------------------------------
     @Override
     @Transactional(readOnly = true)
-    public Supplier findByName(String name) {
-        return supplierRepository.findByNameIgnoreCase(name)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Proveedor no encontrado con nombre: " + name
-                ));
+    public List<Supplier> searchByName(String name) {
+        return supplierRepository.findByNameContainingIgnoreCase(name);
     }
 
     // ---------------------------------------------------------

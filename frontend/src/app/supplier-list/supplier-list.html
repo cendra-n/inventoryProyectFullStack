@@ -1,1 +1,80 @@
-<p>supplier-list works!</p>
+<div class="container mt-4">
+  <h2 class="text-center">Lista de proveedores</h2>
+
+  <button class="btn btn-secondary mb-3" (click)="goBackToSuppliers()">
+    ⬅ Atrás
+  </button>
+
+  <hr>
+
+  <div class="d-flex gap-2 mb-3">
+
+  <input
+    type="text"
+    class="form-control"
+    placeholder="Buscar por nombre"
+    [(ngModel)]="searchText"
+    name="searchText">
+
+  <button
+    type="button"
+    class="btn btn-primary"
+    (click)="search()">
+    Buscar
+  </button>
+
+  <button
+    type="button"
+    class="btn btn-secondary"
+    (click)="clearSearch()">
+    Limpiar
+  </button>
+
+</div>
+
+
+<div *ngIf="!loading && suppliers.length === 0" class="alert alert-warning mt-3">
+  No se encontraron proveedores
+</div>
+
+  <table class="table table-dark table-striped table-hover">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Descripción</th>
+        <th class="text-center">Acciones</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let supplier of suppliers">
+        <td>{{ supplier.id }}</td>
+        <td>{{ supplier.name }}</td>
+        <td>{{ supplier.phone }}</td>
+        <td>{{ supplier.email}}</td>
+       
+
+      <td class="text-center">
+        <div class="d-flex justify-content-center gap-2">
+          <button
+            class="btn btn-warning btn-sm"
+            (click)="editSupplier(supplier.id)">
+            ✏️
+          </button>
+
+          <button
+            class="btn btn-danger btn-sm"
+            (click)="deleteSupplier(supplier.id)">
+            🗑️
+          </button>
+
+        </div>
+      </td>
+
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+

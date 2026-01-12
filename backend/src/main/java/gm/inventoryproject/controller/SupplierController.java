@@ -119,4 +119,25 @@ public class SupplierController {
         return ResponseEntity.noContent().build();
     }
 
+    // ------------------------------------------------------
+    // GET BY NAME
+    // ------------------------------------------------------
+
+    @Operation(
+            summary = "Buscar proveedor por nombre (parcial)",
+            description = "Devuelve una lista de proveedor que contengan el texto enviado"
+    )
+    @ApiResponse(responseCode = "200", description = "Listado obtenido correctamente")
+    @ApiResponse(responseCode = "404", description = "No existe un proveedor con ese nombre")
+    @GetMapping("/search")
+    public ResponseEntity<List<SupplierResponseDto>> search(@RequestParam String name) {
+
+        List<SupplierResponseDto> list = supplierService.searchByName(name)
+                .stream()
+                .map(this::toDto)
+                .toList();
+
+        return ResponseEntity.ok(list);
+    }
+
 }

@@ -9,6 +9,10 @@ import { CategoryHome } from './category-home/category-home';
 import { CategoryList } from './category-list/category-list';
 import { CategoryEdit } from './category-edit/category-edit';
 import { CategoryCreate } from './category-create/category-create';
+import { SupplierHome } from './supplier-home/supplier-home';
+import { SupplierCreate } from './supplier-create/supplier-create';
+import { SupplierEdit } from './supplier-edit/supplier-edit';
+import { SupplierList } from './supplier-list/supplier-list';
 
 export const routes: Routes = [
   { path: '', component: Home },
@@ -50,6 +54,26 @@ export const routes: Routes = [
   { 
     path: 'categories/create',
     component: CategoryCreate
+  },
+  
+  {
+    path: 'suppliers',
+    component: SupplierHome
+  },
+
+  {
+    path: 'suppliers/list',
+    component: SupplierList
+  },
+
+  {
+    path: 'suppliers/edit/:id',
+    component: SupplierEdit
+  },
+
+  {
+    path: 'suppliers/create',
+    component: SupplierCreate
   },
 
   { path: '**', redirectTo: '' }
