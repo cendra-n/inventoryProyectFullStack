@@ -105,19 +105,24 @@ public class CategoryController {
     // ------------------------------------------------------
     // GET BY NAME
     // ------------------------------------------------------
+
     @Operation(
-            summary = "Buscar categoría por nombre",
-            description = "Devuelve una categoría en base al nombre exacto."
+            summary = "Buscar categorías por nombre (parcial)",
+            description = "Devuelve una lista de categorías que contengan el texto enviado"
     )
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Categoría encontrada"),
-            @ApiResponse(responseCode = "404", description = "No existe una categoría con ese nombre")
-    })
-    @GetMapping("/name/{name}")
-    public ResponseEntity<CategoryResponseDto> findByName(@PathVariable String name) {
-        Category c = categoryService.findByName(name);
-        return ResponseEntity.ok(toResponseDto(c));
+    @ApiResponse(responseCode = "200", description = "Listado obtenido correctamente")
+    @ApiResponse(responseCode = "404", description = "No existe una categoría con ese nombre")
+    @GetMapping("/search")
+    public ResponseEntity<List<CategoryResponseDto>> search(@RequestParam String name) {
+
+        List<CategoryResponseDto> list = categoryService.searchByName(name)
+                .stream()
+                .map(this::toResponseDto)
+                .toList();
+
+        return ResponseEntity.ok(list);
     }
+
 
     // ------------------------------------------------------
     // UPDATE
@@ -146,15 +151,28 @@ public class CategoryController {
     // ------------------------------------------------------
     @Operation(
             summary = "Eliminar una categoría",
-            description = "Elimina una categoría existente en base al ID enviado."
+            description = "Elimina una categoría existente en base al ID enviado. " +
+                    "No se permite eliminar una categoría que tenga productos asociados."
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "Categoría eliminada correctamente"),
-            @ApiResponse(responseCode = "404", description = "No existe la categoría a eliminar")
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "Categoría eliminada correctamente"
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "No existe la categoría a eliminar"
+            ),
+            @ApiResponse(
+                    responseCode = "409",
+                    description = "No se puede eliminar la categoría porque tiene productos asociados"
+            )
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         categoryService.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+
 }

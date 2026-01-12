@@ -15,7 +15,7 @@ public class ProductRequestDto {
             regexp = "^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ ]+$",
             message = "El nombre solo puede contener letras, números y espacios"
     )
-    @Schema(description = "Nombre del producto", example = "Mouse inalámbrico")
+    @Schema(description = "Nombre del producto", example = "Botella de agua villavicencio")
     private String name;
 
     @NotBlank(message = "La descripción no puede estar vacía")
@@ -24,7 +24,7 @@ public class ProductRequestDto {
             regexp = "^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ ]+$",
             message = "La descripción solo puede contener letras, números y espacios"
     )
-    @Schema(description = "Descripción del producto", example = "Mouse óptico inalámbrico de 1600 DPI")
+    @Schema(description = "Descripción del producto", example = "Botella de agua no gasificada de 500ml.")
     private String description;
 
     @NotNull(message = "El precio es obligatorio")

@@ -104,14 +104,19 @@ public class SupplierController {
         return ResponseEntity.ok(toDto(updated));
     }
 
-    // ---------------------------------------------------------
-    // DELETE
-    // ---------------------------------------------------------
-    @Operation(summary = "Eliminar proveedor")
-    @ApiResponse(responseCode = "204", description = "Proveedor eliminado correctamente")
+    @Operation(
+            summary = "Eliminar un proveedor",
+            description = "Elimina un proveedor existente. No se permite eliminar un proveedor que tenga productos asociados."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Proveedor eliminado correctamente"),
+            @ApiResponse(responseCode = "404", description = "No existe el proveedor a eliminar"),
+            @ApiResponse(responseCode = "409", description = "No se puede eliminar el proveedor porque tiene productos asociados")
+    })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         supplierService.delete(id);
         return ResponseEntity.noContent().build();
     }
+
 }

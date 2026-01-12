@@ -1,9 +1,11 @@
 package gm.inventoryproject.service;
 
+import gm.inventoryproject.exceptions.CategoryHasProductsException;
 import gm.inventoryproject.exceptions.DuplicateFieldException;
 import gm.inventoryproject.exceptions.ResourceNotFoundException;
 import gm.inventoryproject.model.Category;
 import gm.inventoryproject.repository.CategoryRepository;
+import gm.inventoryproject.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,10 +15,14 @@ import java.util.List;
 public class CategoryService implements ICategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final ProductRepository productRepository;
 
-    public CategoryService(CategoryRepository categoryRepository) {
+    public CategoryService(CategoryRepository categoryRepository,
+                           ProductRepository productRepository) {
         this.categoryRepository = categoryRepository;
+        this.productRepository = productRepository;
     }
+
 
     // ---------------------------------------------------------
     // GET ALL
@@ -44,12 +50,10 @@ public class CategoryService implements ICategoryService {
     // ---------------------------------------------------------
     @Override
     @Transactional(readOnly = true)
-    public Category findByName(String name) {
-        return categoryRepository.findByName(name)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Categoría no encontrada con nombre: " + name)
-                );
+    public List<Category> searchByName(String name) {
+        return categoryRepository.findByNameContainingIgnoreCase(name);
     }
+
 
     // ---------------------------------------------------------
     // CREATE
@@ -95,11 +99,21 @@ public class CategoryService implements ICategoryService {
     public void delete(Long id) {
 
         if (!categoryRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Categoría no encontrada con id: " + id);
+            throw new ResourceNotFoundException(
+                    "Categoría no encontrada con id: " + id
+            );
+        }
+
+        if (productRepository.existsByCategoryId(id)) {
+            throw new CategoryHasProductsException(
+                    "No se puede eliminar la categoría porque tiene productos asociados"
+            );
         }
 
         categoryRepository.deleteById(id);
     }
+
+
 }
 
 

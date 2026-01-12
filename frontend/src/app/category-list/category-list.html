@@ -43,8 +43,6 @@
         <th>ID</th>
         <th>Nombre</th>
         <th>Descripción</th>
-        <th>Precio</th>
-        <th>Stock</th>
         <th class="text-center">Acciones</th>
       </tr>
     </thead>
@@ -64,7 +62,11 @@
             ✏️
           </button>
 
-           
+          <button
+            class="btn btn-danger btn-sm"
+            (click)="deleteCategory(category.id)">
+            🗑️
+          </button>
 
         </div>
       </td>

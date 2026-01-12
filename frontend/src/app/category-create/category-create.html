@@ -1,1 +1,92 @@
-<p>category-create works!</p>
+<div class="container mt-4">
+  <h2 class="text-center">
+    Crear Categoria
+  </h2>
+  <hr>
+    <button class="btn btn-secondary mb-3" (click)="goBackToCategories()">
+    ⬅ Atrás
+  </button>
+
+  <form #categoryForm="ngForm" (ngSubmit)="save()" novalidate>
+
+    <!-- NOMBRE -->
+    <div class="mb-3">
+      <label class="form-label">Nombre</label>
+      <input
+        type="text"
+        class="form-control"
+        name="name"
+        [(ngModel)]="category.name"
+        required
+        minlength="2"
+        maxlength="40"
+        pattern="^[A-Za-zÁÉÍÓÚÑáéíóúñ ]+$"
+        #name="ngModel"
+      />
+
+      <div class="text-danger mt-1" *ngIf="name.invalid && name.touched">
+        <small *ngIf="name.errors?.['required']">
+          El nombre es obligatorio
+        </small>
+        <small *ngIf="name.errors?.['minlength']">
+          Mínimo 2 caracteres
+        </small>
+        <small *ngIf="name.errors?.['maxlength']">
+          Máximo 40 caracteres
+        </small>
+        <small *ngIf="name.errors?.['pattern']">
+          Solo letras y espacios
+        </small>
+      </div>
+    </div>
+
+    <!-- DESCRIPCIÓN -->
+    <div class="mb-3">
+      <label class="form-label">Descripción</label>
+      <input
+        type="text"
+        class="form-control"
+        name="description"
+        [(ngModel)]="category.description"
+        required
+        maxlength="200"
+        pattern="^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ ]+$"
+        #description="ngModel"
+      />
+
+      <div class="text-danger mt-1" *ngIf="description.invalid && description.touched">
+        <small *ngIf="description.errors?.['required']">
+          La descripción es obligatoria
+        </small>
+        <small *ngIf="description.errors?.['maxlength']">
+          Máximo 200 caracteres
+        </small>
+        <small *ngIf="description.errors?.['pattern']">
+          Solo letras, números y espacios
+        </small>
+      </div>
+    </div>
+
+    <!-- BOTONES -->
+    <div class="d-flex gap-2">
+      <button
+        type="submit"
+        class="btn btn-success"
+        [disabled]="categoryForm.invalid"
+      >
+        Guardar
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-secondary"
+        (click)="cancel()"
+      >
+        Cancelar
+      </button>
+    </div>
+
+  </form>
+</div>
+
+

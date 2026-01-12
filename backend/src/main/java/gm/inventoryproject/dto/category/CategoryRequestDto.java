@@ -17,11 +17,17 @@ public class CategoryRequestDto {
             regexp = "^[A-Za-zÁÉÍÓÚÑáéíóúñ ]+$",
             message = "El nombre solo puede contener letras y espacios"
     )
-    @Schema(description = "Nombre de la categoría", example = "Electrónica")
+    @Schema(description = "Nombre de la categoría", example = "No perecederos")
     private String name;
 
+    @NotBlank(message = "La descripción no puede estar vacía")
     @Size(max = 200, message = "La descripción no puede superar los 200 caracteres")
-    @Schema(description = "Descripción de la categoría", example = "Productos relacionados con tecnología")
+    @Pattern(
+            regexp = "^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ ]+$",
+            message = "La descripción solo puede contener letras, números y espacios"
+    )
+    @Schema(description = "Descripción del producto", example = "Productos comestibles con " +
+            "larga vida útil que no requieren refrigeración para su conservación")
     private String description;
 }
 

@@ -10,7 +10,9 @@ public interface ICategoryService {
 
     Category getById(Long id);
 
-    Category findByName(String name);
+    List<Category> searchByName(String name);
+
+    //Category findByName(String name);
 
     Category create(Category category);
 

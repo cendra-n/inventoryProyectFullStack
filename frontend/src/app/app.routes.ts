@@ -43,8 +43,8 @@ export const routes: Routes = [
   },
   
   { 
-    path: 'categories/edit',
-    component: CategoryEdit
+   path: 'categories/edit/:id',
+   component: CategoryEdit
   },
 
   { 

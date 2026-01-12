@@ -100,8 +100,33 @@ public class GlobalExceptionHandler {
         return buildResponse(HttpStatus.BAD_REQUEST, message);
     }
 
+    //-------------------------------------------------
+    // 7) ERROR 409 NO SE PUEDE ELIMINAR CATEGORIA CON PRODUCTO ASOCIADO
+    //-----------------------------------------------
+    @ExceptionHandler(CategoryHasProductsException.class)
+    public ResponseEntity<String> handleCategoryHasProducts(
+            CategoryHasProductsException ex
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(ex.getMessage());
+    }
+
+    //-------------------------------------------------
+    // 8) ERROR 409 NO SE PUEDE ELIMINAR PROVEEDOR CON PRODUCTO ASOCIADO
+    //
+    @ExceptionHandler(SupplierHasProductsException.class)
+    public ResponseEntity<String> handleSupplierHasProducts(
+             SupplierHasProductsException ex)
+    {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(ex.getMessage());
+    }
+
+
     // -----------------------------------------------------------
-    // 7) ERROR GENERAL (500)
+    // 9) ERROR GENERAL (500)
     // -----------------------------------------------------------
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleGeneral(Exception ex) {

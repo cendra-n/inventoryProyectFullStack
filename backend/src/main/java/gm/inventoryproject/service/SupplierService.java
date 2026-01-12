@@ -1,9 +1,12 @@
 package gm.inventoryproject.service;
 
 import gm.inventoryproject.dto.supplier.SupplierRequestDto;
+import gm.inventoryproject.exceptions.CategoryHasProductsException;
 import gm.inventoryproject.exceptions.DuplicateFieldException;
 import gm.inventoryproject.exceptions.ResourceNotFoundException;
+import gm.inventoryproject.exceptions.SupplierHasProductsException;
 import gm.inventoryproject.model.Supplier;
+import gm.inventoryproject.repository.ProductRepository;
 import gm.inventoryproject.repository.SupplierRepository;
 
 import org.springframework.stereotype.Service;
@@ -15,9 +18,14 @@ import java.util.List;
 public class SupplierService implements ISupplierService {
 
     private final SupplierRepository supplierRepository;
+    private final ProductRepository productRepository;
 
-    public SupplierService(SupplierRepository supplierRepository) {
+
+    public SupplierService(SupplierRepository supplierRepository,
+                           ProductRepository productRepository ) {
+
         this.supplierRepository = supplierRepository;
+        this.productRepository = productRepository;
     }
 
     // ---------------------------------------------------------
@@ -107,15 +115,31 @@ public class SupplierService implements ISupplierService {
         return supplierRepository.save(existing);
     }
 
-    // ---------------------------------------------------------
-    // DELETE
-    // ---------------------------------------------------------
-    @Override
-    @Transactional
-    public void delete(Long id) {
-        if (!supplierRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Proveedor no encontrado con id: " + id);
-        }
-        supplierRepository.deleteById(id);
+// ---------------------------------------------------------
+// DELETE
+// ---------------------------------------------------------
+@Override
+@Transactional
+public void delete(Long id) {
+
+    if (!supplierRepository.existsById(id)) {
+        throw new ResourceNotFoundException(
+                "Proveedor no encontrado con id: " + id
+        );
     }
+
+    if (productRepository.existsBySupplierId(id)) {
+        throw new SupplierHasProductsException(
+                "No se puede eliminar el proveedor porque tiene productos asociados"
+        );
+    }
+
+    supplierRepository.deleteById(id);
+}
+
+
+
+
+
+
 }

@@ -49,22 +49,26 @@ export class CategoryList implements OnInit{
     this.router.navigate(['/categories']);
   }
 
-  
+    
   search(): void {
     if (!this.searchText || this.searchText.trim() === '') {
       this.loadCategories();
       return;
+    }
+
+    this.categoryService.searchByName(this.searchText.trim())
+      .subscribe({
+        next: (data) => {
+          this.categories = data;   // ✅ data YA ES Category[]
+        },
+        error: () => {
+          this.categories = [];
+          alert('No se encontraron categorías');
+        }
+      });
   }
 
-  this.categoryService.searchByName(this.searchText.trim())
-    .subscribe({
-      next: data => this.categories = data,
-      error: () => {
-        this.categories = [];
-        alert('No se encontraron categorias');
-      }
-    });
-  }
+
 
   clearSearch(): void {
     this.searchText = '';
@@ -75,7 +79,20 @@ export class CategoryList implements OnInit{
     this.router.navigate(['/categories/edit', id]);
   }
 
-  // aca falta el delete que debe ser distinto por la fk de product
+  deleteCategory(id: number): void {
+  if (!confirm('¿Seguro que deseas eliminar esta categoría?')) return;
+
+  this.categoryService.delete(id).subscribe({
+    next: () => {
+      alert('Categoría eliminada correctamente');
+      this.loadCategories();
+    },
+    error: (err) => {
+      alert('No se puede eliminar la categoría porque tiene productos asociados');
+    }
+  });
+}
+
 
 
 }

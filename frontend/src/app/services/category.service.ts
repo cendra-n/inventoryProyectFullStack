@@ -25,21 +25,20 @@ export class CategoryService {
   }
    
    
-  searchByName(name: string) {
-    return this.http.get<Category[]>(
-   `${this.apiUrl}/search`,
-     { params: { name } }
-    );
+  searchByName(name: string): Observable<Category[]> {
+      return this.http.get<Category[]>(
+        `${this.apiUrl}/search`,
+        { params: { name } }
+      );
   }
-   
-   
+
   update(id: number, category: Category): Observable<Category> {
     return this.http.put<Category>(`${this.apiUrl}/${id}`, category);
   }
    
    
   delete(id: number): Observable<void> {
-   return this.http.delete<void>(`${this.apiUrl}/${id}`); //cambiar este metodo por la fk de product
+   return this.http.delete<void>(`${this.apiUrl}/${id}`);
    }
 
 
