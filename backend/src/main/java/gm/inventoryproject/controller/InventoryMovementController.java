@@ -95,21 +95,6 @@ public class InventoryMovementController {
 
 
 
-
-    // -------------------------------------------
-    // DELETE
-    // -------------------------------------------
-    @Operation(summary = "Eliminar un movimiento")
-    @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "Movimiento eliminado correctamente"),
-            @ApiResponse(responseCode = "404", description = "No existe un movimiento con ese ID")
-    })
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        movementService.delete(id);
-        return ResponseEntity.noContent().build();
-    }
-
     // -------------------------------------------
     // GET MOVEMENTS BY PRODUCT
     // -------------------------------------------

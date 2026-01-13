@@ -102,14 +102,6 @@ public class InventoryMovementService implements IInventoryMovementService {
     }
 
 
-    @Override
-    @Transactional
-    public void delete(Long id) {
-        if (!movementRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Movement not found with id: " + id);
-        }
-        movementRepository.deleteById(id);
-    }
 
     // 🔍 Búsqueda por producto
     @Override

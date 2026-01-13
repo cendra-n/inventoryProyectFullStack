@@ -8,8 +8,10 @@ export enum MovementType {
 export class InventoryMovement {
   id!: number;
   quantity!: number;
-  type!: MovementType;
+  type!: 'IN' | 'OUT';
   date!: Date;
-  product!: Product;
+  productId!: Product;
+  productName!: string;
+
 }
 

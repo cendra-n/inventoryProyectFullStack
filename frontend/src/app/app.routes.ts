@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-
 import { Home } from './home/home';
 import { ProductHome } from './product-home/product-home';
 import { ProductList } from './product-list/product-list';
@@ -13,6 +12,9 @@ import { SupplierHome } from './supplier-home/supplier-home';
 import { SupplierCreate } from './supplier-create/supplier-create';
 import { SupplierEdit } from './supplier-edit/supplier-edit';
 import { SupplierList } from './supplier-list/supplier-list';
+import { InventoryMovementHome } from './inventory-movement-home/inventory-movement-home';
+import { InventoryMovementCreate } from './inventory-movement-create/inventory-movement-create';
+import { InventoryMovementList } from './inventory-movement-list/inventory-movement-list';
 
 export const routes: Routes = [
   { path: '', component: Home },
@@ -74,6 +76,21 @@ export const routes: Routes = [
   {
     path: 'suppliers/create',
     component: SupplierCreate
+  },
+
+  {
+    path: 'inventories',
+    component: InventoryMovementHome
+  },
+
+  {
+    path: 'inventories/create',
+    component: InventoryMovementCreate
+  },
+
+  {
+    path: 'inventories/list',
+    component: InventoryMovementList
   },
 
   { path: '**', redirectTo: '' }

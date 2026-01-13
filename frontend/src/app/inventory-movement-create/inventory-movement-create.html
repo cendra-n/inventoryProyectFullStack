@@ -1,0 +1,74 @@
+<div class="container mt-4">
+  <h2 class="text-center">Registrar movimiento de inventario</h2>
+  <hr>
+
+  
+  <form (ngSubmit)="save()" #form="ngForm">  
+
+    <!-- PRODUCTO -->
+    <div class="mb-3">
+      <label class="form-label">Producto</label>
+      <select
+        class="form-select"
+        name="productId"
+        [(ngModel)]="movement.productId"
+        required>
+        <option [ngValue]="null" disabled selected>
+          Seleccione un producto
+        </option>
+        <option *ngFor="let p of products" [ngValue]="p.id">
+          {{ p.name }}
+        </option>
+      </select>
+    </div>
+
+    <!-- TIPO -->
+    <div class="mb-3">
+      <label class="form-label">Tipo de movimiento</label>
+      <select
+        class="form-select"
+        name="type"
+        [(ngModel)]="movement.type"
+        required>
+        <option value="" disabled selected>
+          Seleccione el tipo
+        </option>
+        <option value="IN">Entrada</option>
+        <option value="OUT">Salida</option>
+      </select>
+    </div>
+
+    <!-- CANTIDAD -->
+    <div class="mb-3">
+      <label class="form-label">Cantidad</label>
+      <input
+        type="number"
+        class="form-control"
+        name="quantity"
+        [(ngModel)]="movement.quantity"
+        required
+        min="1"
+      >
+    </div>
+
+    <!-- BOTONES -->
+    <div class="d-flex gap-2">
+      <button
+        type="submit"
+        class="btn btn-success"
+        [disabled]="form.invalid || loading">
+        Guardar
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-secondary"
+        (click)="cancel()">
+        Cancelar
+      </button>
+    </div>
+
+  </form>
+
+</div>
+

@@ -15,7 +15,6 @@ public interface IInventoryMovementService {
     // NUEVO: Crear desde DTO (firma pública)
     InventoryMovement createFromDto(gm.inventoryproject.dto.inventorymovement.InventoryMovementRequestDto dto);
 
-    void delete(Long id);
 
     // 🔍 Búsquedas
     List<InventoryMovement> getByProduct(Long productId);
