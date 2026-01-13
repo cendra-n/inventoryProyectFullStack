@@ -3,9 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { InventoryService } from '../services/inventoryMovement.service';
-import { ProductService } from '../services/product.service';
+import {
+  InventoryService,
+  InventoryMovementCreateRequest
+} from '../services/inventoryMovement.service';
 
+import { ProductService } from '../services/product.service';
 import { Product } from '../model/product.model';
 
 @Component({
@@ -17,14 +20,13 @@ import { Product } from '../model/product.model';
 export class InventoryMovementCreate implements OnInit {
 
   products: Product[] = [];
-
-  movement = {
-    productId: null as number | null,
-    type: '',
-    quantity: null as number | null
-  };
-
   loading = false;
+
+  movement: InventoryMovementCreateRequest = {
+    productId: 0,
+    quantity: 1,
+    type: 'IN'
+  };
 
   constructor(
     private inventoryService: InventoryService,
@@ -39,16 +41,15 @@ export class InventoryMovementCreate implements OnInit {
   private loadProducts(): void {
     this.productService.getAll().subscribe({
       next: data => this.products = data,
-      error: err => {
-        console.error(err);
-        alert('No se pudieron cargar los productos');
-      }
+      error: () => alert('No se pudieron cargar los productos')
     });
   }
 
-  /*
   save(): void {
-    if (!this.movement.productId || !this.movement.type || !this.movement.quantity) {
+    if (
+      this.movement.productId <= 0 ||
+      this.movement.quantity <= 0
+    ) {
       alert('Todos los campos son obligatorios');
       return;
     }
@@ -61,17 +62,13 @@ export class InventoryMovementCreate implements OnInit {
         this.router.navigate(['/inventories/list']);
       },
       error: err => {
-        console.error(err);
         alert(err?.error?.message || 'Error al registrar el movimiento');
         this.loading = false;
       }
     });
   }
-    */
 
   cancel(): void {
     this.router.navigate(['/inventories']);
   }
 }
-
-

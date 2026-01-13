@@ -2,8 +2,7 @@
   <h2 class="text-center">Registrar movimiento de inventario</h2>
   <hr>
 
-  
-  <form (ngSubmit)="save()" #form="ngForm">  
+  <form (ngSubmit)="save()" #form="ngForm">
 
     <!-- PRODUCTO -->
     <div class="mb-3">
@@ -13,10 +12,10 @@
         name="productId"
         [(ngModel)]="movement.productId"
         required>
-        <option [ngValue]="null" disabled selected>
+        <option value="0" disabled>
           Seleccione un producto
         </option>
-        <option *ngFor="let p of products" [ngValue]="p.id">
+        <option *ngFor="let p of products" [value]="p.id">
           {{ p.name }}
         </option>
       </select>
@@ -30,9 +29,6 @@
         name="type"
         [(ngModel)]="movement.type"
         required>
-        <option value="" disabled selected>
-          Seleccione el tipo
-        </option>
         <option value="IN">Entrada</option>
         <option value="OUT">Salida</option>
       </select>
@@ -46,9 +42,8 @@
         class="form-control"
         name="quantity"
         [(ngModel)]="movement.quantity"
-        required
         min="1"
-      >
+        required>
     </div>
 
     <!-- BOTONES -->
@@ -69,6 +64,4 @@
     </div>
 
   </form>
-
 </div>
-

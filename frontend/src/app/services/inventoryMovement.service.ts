@@ -4,6 +4,12 @@ import { Observable } from 'rxjs';
 
 import { InventoryMovement } from '../model/inventory-movement.model';
 
+export interface InventoryMovementCreateRequest {
+  productId: number;
+  quantity: number;
+  type: 'IN' | 'OUT';
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -13,7 +19,9 @@ export class InventoryService {
 
   constructor(private http: HttpClient) {}
 
-
+  // -------------------------
+  // LISTADO
+  // -------------------------
   getAll(): Observable<InventoryMovement[]> {
     return this.http.get<InventoryMovement[]>(this.apiUrl);
   }
@@ -22,27 +30,24 @@ export class InventoryService {
     return this.http.get<InventoryMovement>(`${this.apiUrl}/${id}`);
   }
 
-  
-  create(movement: {
-    quantity: number;
-    type: 'IN' | 'OUT';
-    productId: number;
-  }): Observable<InventoryMovement> {
+  // -------------------------
+  // CREATE (REQUEST DTO)
+  // -------------------------
+  create(
+    movement: InventoryMovementCreateRequest
+  ): Observable<InventoryMovement> {
     return this.http.post<InventoryMovement>(this.apiUrl, movement);
   }
 
-  // ---------------------------------------
-  // GET BY PRODUCT
-  // ---------------------------------------
+  // -------------------------
+  // BÚSQUEDAS
+  // -------------------------
   getByProduct(productId: number): Observable<InventoryMovement[]> {
     return this.http.get<InventoryMovement[]>(
       `${this.apiUrl}/product/${productId}`
     );
   }
 
-  // ---------------------------------------
-  // GET BY DATE RANGE
-  // ---------------------------------------
   getByDateRange(start: string, end: string): Observable<InventoryMovement[]> {
     const params = new HttpParams()
       .set('start', start)
@@ -54,9 +59,6 @@ export class InventoryService {
     );
   }
 
-  // ---------------------------------------
-  // GET BY PRODUCT + DATE RANGE
-  // ---------------------------------------
   getByProductAndDate(
     productId: number,
     start: string,
@@ -72,6 +74,4 @@ export class InventoryService {
       { params }
     );
   }
-
 }
-
