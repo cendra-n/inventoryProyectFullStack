@@ -37,12 +37,13 @@
         name="description"
         required
         maxlength="240"
-        pattern="^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ ]+$"
+        pattern="^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s.,;:'\-]+$"
         #description="ngModel"
       >
       <div class="text-danger" *ngIf="description.invalid && description.touched">
         <small *ngIf="description.errors?.['required']">La descripción es obligatoria</small>
         <small *ngIf="description.errors?.['maxlength']">Máximo 240 caracteres</small>
+        <small *ngIf="description.errors?.['pattern']"> Solo letras, números, espacios y signos (.,;-)</small>
       </div>
     </div>
 
