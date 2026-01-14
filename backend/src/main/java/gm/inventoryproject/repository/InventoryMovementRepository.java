@@ -11,6 +11,8 @@ import java.util.List;
 
 public interface InventoryMovementRepository extends JpaRepository<InventoryMovement, Long> {
 
+    boolean existsByProductId(Long productId);
+
     // Buscar todos los movimientos de un producto
     List<InventoryMovement> findByProduct(Product product);
 

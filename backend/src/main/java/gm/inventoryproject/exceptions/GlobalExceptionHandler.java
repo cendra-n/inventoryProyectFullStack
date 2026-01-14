@@ -123,9 +123,19 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.CONFLICT)
                 .body(ex.getMessage());
     }
+    //----------------------------------------------------------
+    // 9) ERROR 409  NO SE PERMITE BORRAR UN PRODUCTO CON MOVIMIENTO DE INVENTARIO
+    //-----------------------------------------------------------
+    @ExceptionHandler(ProductHasMovementsException.class)
+    public ResponseEntity<Map<String, String>> handleProductHasMovements(ProductHasMovementsException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", ex.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+    }
+
 
     // -----------------------------------------------------------
-    // 9) ERROR GENERAL (500)
+    // 10) ERROR GENERAL (500)
     // -----------------------------------------------------------
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleGeneral(Exception ex) {

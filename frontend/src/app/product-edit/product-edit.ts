@@ -76,17 +76,39 @@ export class ProductEdit implements OnInit {
   }
 
   save(): void {
+    // Guardamos lo que el usuario intentó cambiar
+    const attemptedCategory = this.product.categoryId;
+    const attemptedSupplier = this.product.supplierId;
+
     this.productService.update(this.productId, this.product).subscribe({
-      next: () => {
-        alert('Producto actualizado correctamente');
+      next: (updatedProduct) => {
+
+        // Detectamos si el backend ignoró categoría o proveedor
+        const categoryChanged = attemptedCategory !== updatedProduct.categoryId;
+        const supplierChanged = attemptedSupplier !== updatedProduct.supplierId;
+
+        if (categoryChanged || supplierChanged) {
+          alert(
+            'Producto actualizado.\n\n' +
+            'Este producto tiene movimientos de inventario.\n' +
+            'Solo se actualizaron: nombre, descripción y precio.\n' +
+            'Categoría y proveedor no pueden modificarse.'
+          );
+        } else {
+          alert('Producto actualizado correctamente');
+        }
+
         this.router.navigate(['/products/list']);
       },
+
       error: (err) => {
         console.error('Error al actualizar producto', err);
         alert('Error al actualizar el producto');
       }
     });
   }
+
+  
 
   cancel(): void {
     this.router.navigate(['/products/list']);

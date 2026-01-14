@@ -1,9 +1,19 @@
 <div class="container mt-4" *ngIf="product">
   <h2 class="text-center">Editar producto</h2>
   <hr>
-   <button class="btn btn-secondary mb-3" (click)="goBackToProducts()">
+
+  <button class="btn btn-secondary mb-3" (click)="goBackToProducts()">
     ⬅ Atrás
   </button>
+
+  <!-- 🔹 MENSAJE INFORMATIVO -->
+  <div class="alert alert-info">
+    <strong>Reglas de edición:</strong><br>
+    • El stock no se edita manualmente.<br>
+    • Si el producto tiene movimientos de inventario, solo se pueden editar
+      nombre, descripción y precio.<br>
+    • Categoría y proveedor solo pueden cambiarse si el producto aún no tiene movimientos.
+  </div>
 
   <form #form="ngForm" class="mt-4" (ngSubmit)="save()">
 
@@ -62,7 +72,7 @@
       >
     </div>
 
-    <!-- STOCK -->
+    <!-- STOCK (BLOQUEADO) -->
     <div class="mb-3">
       <label class="form-label">Stock</label>
       <input
@@ -73,7 +83,11 @@
         required
         min="0"
         #stock="ngModel"
+        disabled
       >
+      <small class="text-muted">
+        El stock solo se modifica mediante movimientos de inventario.
+      </small>
     </div>
 
     <!-- CATEGORÍA -->

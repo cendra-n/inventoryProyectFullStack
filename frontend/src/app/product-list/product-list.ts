@@ -85,14 +85,22 @@ export class ProductList implements OnInit {
     this.productService.delete(id).subscribe({
       next: () => {
         alert('Producto eliminado correctamente');
-        this.loadProducts(); // 🔥 refresca la tabla
+        this.loadProducts();
       },
       error: (err) => {
         console.error(err);
-        alert('Error al eliminar el producto');
+
+        // 👉 Si el backend devolvió 409
+        if (err.status === 409) {
+          alert(err.error.error); 
+          // muestra: "No se puede eliminar un producto con movimientos..."
+        } else {
+          alert('Error al eliminar el producto');
+        }
       }
     });
   }
+
   
   downloadPdf(): void {
     this.productService.downloadProductsPdf().subscribe({

@@ -2,10 +2,12 @@ package gm.inventoryproject.service;
 
 import gm.inventoryproject.dto.product.ProductRequestDto;
 import gm.inventoryproject.exceptions.DuplicateFieldException;
+import gm.inventoryproject.exceptions.ProductHasMovementsException;
 import gm.inventoryproject.exceptions.ResourceNotFoundException;
 import gm.inventoryproject.model.Category;
 import gm.inventoryproject.model.Product;
 import gm.inventoryproject.model.Supplier;
+import gm.inventoryproject.repository.InventoryMovementRepository;
 import gm.inventoryproject.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,8 @@ public class ProductService implements IProductService {
     private final ProductRepository productRepository;
     private final ICategoryService categoryService;
     private final ISupplierService supplierService;
+    private final InventoryMovementRepository inventoryMovementRepository;
+
 
     // ---------------------------------------------------------
     // GET ALL
@@ -75,27 +79,31 @@ public class ProductService implements IProductService {
 
         Product existing = getById(id);
 
-        // Validar duplicado de nombre si cambió
+        // Validar duplicado de nombre
         if (!existing.getName().equalsIgnoreCase(dto.getName())
                 && productRepository.existsByName(dto.getName())) {
             throw new DuplicateFieldException("Ya existe un producto con el nombre: " + dto.getName());
         }
 
-        // Setear campos del DTO
+        boolean hasMovements = inventoryMovementRepository.existsByProductId(id);
+
+        // Siempre editable
         existing.setName(dto.getName());
         existing.setDescription(dto.getDescription());
         existing.setPrice(dto.getPrice());
-        existing.setStock(dto.getStock());
 
-        // Reasignar relaciones
-        Category category = categoryService.getById(dto.getCategoryId());
-        Supplier supplier = supplierService.getById(dto.getSupplierId());
-
-        existing.setCategory(category);
-        existing.setSupplier(supplier);
+        // Solo si NO tiene movimientos permite cambiar categoría y proveedor
+        if (!hasMovements) {
+            Category category = categoryService.getById(dto.getCategoryId());
+            Supplier supplier = supplierService.getById(dto.getSupplierId());
+            existing.setCategory(category);
+            existing.setSupplier(supplier);
+        }
 
         return productRepository.save(existing);
     }
+
+
 
     // ---------------------------------------------------------
     // DELETE
@@ -104,6 +112,14 @@ public class ProductService implements IProductService {
     @Transactional
     public void delete(Long id) {
         Product p = getById(id);
+
+        if (inventoryMovementRepository.existsByProductId(id)) {
+            throw new ProductHasMovementsException(
+                    "No se puede eliminar un producto con movimientos de inventario"
+            );
+        }
+
         productRepository.delete(p);
     }
+
 }
