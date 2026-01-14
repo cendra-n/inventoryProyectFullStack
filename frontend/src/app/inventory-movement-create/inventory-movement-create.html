@@ -1,16 +1,16 @@
 <div class="container mt-4">
   <h2 class="text-center">Registrar movimiento de inventario</h2>
   <hr>
-  
+
    <button class="btn btn-secondary mb-3" (click)="goToBackInventories()">
     ⬅ Atrás
   </button>
 
-  <h3>¡Atención! Los movimientos de inventario, no pueden borrarse ni editarse. Por lo cual, si se ingreso mal 
+  <h4>¡Atención! Los movimientos de inventario, no pueden borrarse ni editarse. Por lo cual, si se ingreso mal 
     la cantidad. Debe ajustarse ingresando un nuevo movimiento, que compense el número que se queria agregar inicialmente.
     Por ejemplo: Se quiere ingresar 200 unidades de jabón dove y por error se marca 250 en el ingreso, se debe generar un nuevo 
     movimiento de 50 unidades que será de salida en este caso.
-  </h3>
+  </h4>
 
   <form (ngSubmit)="save()" #form="ngForm">
 

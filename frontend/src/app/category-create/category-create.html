@@ -41,31 +41,31 @@
     </div>
 
     <!-- DESCRIPCIÓN -->
-    <div class="mb-3">
-      <label class="form-label">Descripción</label>
-      <input
-        type="text"
-        class="form-control"
-        name="description"
-        [(ngModel)]="category.description"
-        required
-        maxlength="200"
-        pattern="^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ ]+$"
-        #description="ngModel"
-      />
+  <div class="mb-3">
+    <label class="form-label">Descripción</label>
+    <input
+      type="text"
+      class="form-control"
+      name="description"
+      [(ngModel)]="category.description"
+      required
+      maxlength="200"
+      pattern="^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s.,;\-]+$" 
+      #description="ngModel"
+    />
 
-      <div class="text-danger mt-1" *ngIf="description.invalid && description.touched">
-        <small *ngIf="description.errors?.['required']">
-          La descripción es obligatoria
-        </small>
-        <small *ngIf="description.errors?.['maxlength']">
-          Máximo 200 caracteres
-        </small>
-        <small *ngIf="description.errors?.['pattern']">
-          Solo letras, números y espacios
-        </small>
-      </div>
+    <div class="text-danger mt-1" *ngIf="description.invalid && description.touched">
+      <small *ngIf="description.errors?.['required']">
+        La descripción es obligatoria
+      </small>
+      <small *ngIf="description.errors?.['maxlength']">
+        Máximo 200 caracteres
+      </small>
+      <small *ngIf="description.errors?.['pattern']">
+        Solo letras, números, espacios y signos (.,;-)
+      </small>
     </div>
+  </div>
 
     <!-- BOTONES -->
     <div class="d-flex gap-2">

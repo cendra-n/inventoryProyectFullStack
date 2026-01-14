@@ -21,8 +21,8 @@ public class ProductRequestDto {
     @NotBlank(message = "La descripción no puede estar vacía")
     @Size(max = 240, message = "La descripción no puede superar los 240 caracteres")
     @Pattern(
-            regexp = "^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ ]+$",
-            message = "La descripción solo puede contener letras, números y espacios"
+            regexp = "^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\\s.,;\\-]+$",
+            message = "La descripción solo puede contener letras, números, espacios y signos de puntuación básicos (.,;-)"
     )
     @Schema(description = "Descripción del producto", example = "Botella de agua no gasificada de 500ml.")
     private String description;
