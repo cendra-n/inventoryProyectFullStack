@@ -135,9 +135,9 @@ inventoryProyectFullStack/
 
 ---
 
-### 🗄️ Base de datos
+## 🗄️ Base de datos
 
-Crear la base de datos:
+###  Crear la base de datos:
 
 ```sql
 CREATE DATABASE inventory_db;
@@ -146,18 +146,23 @@ Configurar las credenciales en el backend (application.properties):
 spring.datasource.url=jdbc:mysql://localhost:3306/inventory_db
 spring.datasource.username=TU_USUARIO
 spring.datasource.password=TU_PASSWORD
+---
 
-###  Backend
+## 🗄️ Backend
+### Ejecutar:
 cd backend
 mvn clean install
 mvn spring-boot:run
 backend disponible en: http://localhost:8080
+---
 
-### Angular
+## 🗄️ Angular
+### Ejecutar:
 cd frontend
 npm install
 ng serve -o
 frontend disponible en: http://localhost:4200
+---
 
 🧪 Testing
 ---------------------------------------
