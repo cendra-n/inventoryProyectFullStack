@@ -71,4 +71,8 @@ export class InventoryMovementCreate implements OnInit {
   cancel(): void {
     this.router.navigate(['/inventories']);
   }
+
+   goToBackInventories(): void {
+    this.router.navigate(['/inventories']);
+  }
 }
