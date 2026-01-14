@@ -111,14 +111,13 @@ El sistema cuenta actualmente con **4 entidades principales**:
 ---
 
 ## 📂 Estructura general del proyecto
-
 inventoryProyectFullStack/
 │
 ├── backend/
-│ └── inventory-app (Spring Boot)
+│   └── inventory-app (Spring Boot)
 │
 └── frontend/
-└── inventory-app (Angular)
+    └── inventory-app (Angular)
 
 
 ---
