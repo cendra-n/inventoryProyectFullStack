@@ -36,6 +36,9 @@ El sistema cuenta actualmente con **4 entidades principales**:
 * **CRUD completo**.
 * **Listado con:**
 * Búsqueda parcial por nombre (ingresando caracteres mínimos).
+* Un producto con movimientos de inventario no puede eliminarse, protegiendo la integridad de los datos.
+* Si tiene movimientos, solo se puede editarse : nombre,descripción y precio.
+* Sino tiene pueden editarse todos sus campos, menos el stock que en campos casos. Solo a través de los movimientos de inventario modifica su stock.
 * Descarga de **PDF** con todos los productos cargados en la base de datos.
 
 
@@ -203,7 +206,7 @@ ng serve -o
 
 ## 🧪 Testing
 
-Actualmente el proyecto no incluye tests automatizados. Serán implementados en la próxima versión.
+Actualmente el proyecto no incluye tests unitarios. Serán implementados en la próxima versión.
 
 ---
 
@@ -223,7 +226,7 @@ Este proyecto surge como evolución de una consigna de curso y fue ampliado con:
 
 **Nadia Cendra**
 
-**Link a demo del proyecto:** [Tu link aquí]
+**Link a demo del proyecto:** [https://drive.google.com/file/d/1qEPnR7cspDyisZWhy6leafh1jSbTJdXk/view?usp=sharing]
 
 ---
 
