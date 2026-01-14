@@ -1,6 +1,4 @@
-He organizado y optimizado el formato de tu archivo Markdown para que sea más legible, profesional y fácil de navegar en GitHub, manteniendo cada palabra y sección del contenido original.
 
----
 
 # 📦 Inventory Project – Full Stack (Angular + Spring Boot)
 
