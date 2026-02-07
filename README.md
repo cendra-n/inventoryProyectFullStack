@@ -115,9 +115,8 @@ Para facilitar la integración con el frontend y asegurar la calidad del softwar
 * **Uso de DTOs:** La transferencia de datos se realiza mediante Data Transfer Objects para proteger las entidades del dominio.
 * **Validaciones Robustas:** Se implementó *Bean Validation* para asegurar que los datos cumplan con los formatos y reglas requeridas antes de ser procesados.
 
-📂 **[Ver Guía: ¿Cómo documenté mi API?](./docs/Como-documente-mi-API-asi.pdf)**
+📂 **[Ver Guía: ¿Cómo documenté mi API?](./docs/C%C3%B3mo%20document%C3%A9%20mi%20API%20as%C3%AD.pdf)**
 *(En este documento detallo el proceso de configuración y cómo se reflejan las validaciones en la interfaz de Swagger).*
-
 ---
 
 ## 🖥️ Tecnologías utilizadas
