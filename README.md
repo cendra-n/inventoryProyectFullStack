@@ -106,6 +106,20 @@ El sistema cuenta actualmente con **4 entidades principales**:
 
 ---
 
+
+## 📖 Documentación de la API (Swagger)
+
+Para facilitar la integración con el frontend y asegurar la calidad del software, la API cuenta con documentación técnica detallada.
+
+* **Swagger UI:** Permite visualizar y probar todos los endpoints de forma interactiva.
+* **Uso de DTOs:** La transferencia de datos se realiza mediante Data Transfer Objects para proteger las entidades del dominio.
+* **Validaciones Robustas:** Se implementó *Bean Validation* para asegurar que los datos cumplan con los formatos y reglas requeridas antes de ser procesados.
+
+📂 **[Ver Guía: ¿Cómo documenté mi API?](./docs/Como-documente-mi-API-asi.pdf)**
+*(En este documento detallo el proceso de configuración y cómo se reflejan las validaciones en la interfaz de Swagger).*
+
+---
+
 ## 🖥️ Tecnologías utilizadas
 
 ### **Backend**
@@ -133,10 +147,13 @@ El sistema cuenta actualmente con **4 entidades principales**:
 inventoryProyectFullStack/
 │
 ├── backend/
-│   └── inventory-app (Spring Boot)
+│   └── inventory-app (Spring Boot)
 │
-└── frontend/
-    └── inventory-app (Angular)
+├── frontend/
+│   └── inventory-app (Angular)
+│
+└── docs/
+    └── Como-documente-mi-API-asi.pdf
 
 ```
 
