@@ -16,6 +16,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.ByteArrayInputStream;
 
+/**
+ * Controlador REST para la generación y descarga de reportes.
+ * <p>
+ * Proporciona endpoints para descargar reportes en formato PDF,
+ * incluyendo listados de productos con información detallada.
+ * </p>
+ */
 @RestController
 @RequestMapping("/api/reports")
 @Tag(name = "Reports", description = "Descarga de reportes en PDF")
@@ -29,6 +36,14 @@ public class ReportController {
         this.pdfReportService = pdfReportService;
     }
 
+    /**
+     * Genera y descarga un PDF con la lista completa de productos.
+     * <p>
+     * El PDF incluye información de stock, categoría y proveedor para cada producto.
+     * Configura los headers HTTP para forzar la descarga del archivo.
+     * </p>
+     * @return ResponseEntity con el contenido del PDF o error 500 si falla la generación.
+     */
     @GetMapping("/products/pdf")
     @Operation(
             summary = "Descargar lista de productos",

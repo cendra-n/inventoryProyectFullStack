@@ -6,6 +6,14 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Data Transfer Object para la respuesta de productos.
+ * <p>
+ * Contiene la información de un producto que se envía al cliente
+ * después de una consulta, creación o actualización, incluyendo
+ * nombres de categoría y proveedor.
+ * </p>
+ */
 @Getter
 @Setter
 @AllArgsConstructor

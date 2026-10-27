@@ -12,6 +12,14 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Implementación del servicio de gestión de movimientos de inventario.
+ * <p>
+ * Registra movimientos de entrada y salida de stock, actualizando
+ * automáticamente el stock de los productos y validando las reglas
+ * de negocio (stock no negativo, cantidad positiva, etc.).
+ * </p>
+ */
 @Service
 public class InventoryMovementService implements IInventoryMovementService {
 
@@ -40,6 +48,21 @@ public class InventoryMovementService implements IInventoryMovementService {
 
     @Override
     @Transactional
+    /**
+     * Registra un nuevo movimiento de inventario desde un DTO.
+     * <p>
+     * Actualiza automáticamente el stock del producto según el tipo de movimiento:
+     * - IN: suma la cantidad al stock actual.
+     * - OUT: resta la cantidad del stock actual, validando que haya stock suficiente.
+     * </p>
+     * @param dto Datos del movimiento a registrar.
+     * @return El movimiento registrado con fecha actual.
+     * @throws ResourceNotFoundException si el producto especificado no existe.
+     * @throws IllegalArgumentException si la cantidad es menor o igual a 0.
+     * @throws IllegalArgumentException si el tipo de movimiento no es válido (debe ser IN o OUT).
+     * @throws IllegalArgumentException si se intenta una salida con stock 0.
+     * @throws IllegalArgumentException si se intenta restar más cantidad de la disponible en stock.
+     */
     public InventoryMovement createFromDto(InventoryMovementRequestDto dto) {
 
         // 1) Validar cantidad

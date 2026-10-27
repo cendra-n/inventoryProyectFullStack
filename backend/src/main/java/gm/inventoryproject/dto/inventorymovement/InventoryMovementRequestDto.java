@@ -7,6 +7,13 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Data Transfer Object para el registro de movimientos de inventario.
+ * <p>
+ * Contiene los datos necesarios para registrar una entrada o salida
+ * de stock de un producto específico.
+ * </p>
+ */
 @Getter
 @Setter
 public class InventoryMovementRequestDto {

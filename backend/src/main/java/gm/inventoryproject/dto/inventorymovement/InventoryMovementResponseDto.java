@@ -7,6 +7,13 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+/**
+ * Data Transfer Object para la respuesta de movimientos de inventario.
+ * <p>
+ * Contiene la información de un movimiento que se envía al cliente
+ * después de una consulta o registro, incluyendo el nombre del producto.
+ * </p>
+ */
 @Getter
 @Setter
 @AllArgsConstructor

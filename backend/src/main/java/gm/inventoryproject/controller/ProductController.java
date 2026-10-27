@@ -18,6 +18,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Controlador REST para la gestión de productos.
+ * <p>
+ * Expone endpoints para realizar operaciones CRUD sobre productos,
+ * incluyendo búsqueda por nombre y mapeo con categorías y proveedores.
+ * </p>
+ */
 @RestController
 @RequestMapping("inventory-app/products")
 @RequiredArgsConstructor

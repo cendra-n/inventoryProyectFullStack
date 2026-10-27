@@ -11,6 +11,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+/**
+ * Implementación del servicio de gestión de categorías.
+ * <p>
+ * Proporciona la lógica de negocio para operaciones CRUD de categorías,
+ * incluyendo validaciones de unicidad de nombres e integridad referencial
+ * con productos asociados.
+ * </p>
+ */
 @Service
 public class CategoryService implements ICategoryService {
 

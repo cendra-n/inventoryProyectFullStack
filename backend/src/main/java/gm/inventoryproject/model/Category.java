@@ -3,6 +3,13 @@ package gm.inventoryproject.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+/**
+ * Representa una categoría de productos en el sistema de inventario.
+ * <p>
+ * Cada categoría agrupa productos similares. El nombre debe ser único
+ * en el sistema.
+ * </p>
+ */
 @Entity
 @Table(name = "categories")
 @Getter

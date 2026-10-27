@@ -3,6 +3,13 @@ package gm.inventoryproject.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+/**
+ * Representa un producto en el sistema de inventario.
+ * <p>
+ * Cada producto pertenece a una categoría y es provisto por un proveedor.
+ * Mantiene información sobre precio, stock disponible y descripción.
+ * </p>
+ */
 @Entity
 @Table(name = "products")
 @Getter @Setter

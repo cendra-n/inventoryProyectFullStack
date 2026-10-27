@@ -20,6 +20,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Controlador REST para la gestión de movimientos de inventario.
+ * <p>
+ * Expone endpoints para registrar movimientos de entrada y salida,
+ * y consultar movimientos por producto, rango de fechas o combinaciones.
+ * </p>
+ */
 @RestController
 @RequestMapping("/inventory-app/movements")
 @Tag(name = "inventory movements", description = "Endpoints para gestionar movimientos de inventario")

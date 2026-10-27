@@ -5,6 +5,13 @@ import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Data Transfer Object para la creación o actualización de productos.
+ * <p>
+ * Contiene los datos necesarios para crear un nuevo producto o
+ * actualizar uno existente, incluyendo referencias a categoría y proveedor.
+ * </p>
+ */
 @Getter
 @Setter
 public class ProductRequestDto {

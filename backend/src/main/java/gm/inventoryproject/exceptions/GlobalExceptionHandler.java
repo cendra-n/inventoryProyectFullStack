@@ -12,6 +12,17 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Handler global de excepciones para la aplicación.
+ * <p>
+ * Intercepta excepciones lanzadas en los controladores y las convierte
+ * en respuestas HTTP apropiadas con formato consistente.
+ * </p>
+ * <p>
+ * Maneja excepciones de validación, recursos no encontrados,
+ * conflictos de integridAD referencial y errores generales.
+ * </p>
+ */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 

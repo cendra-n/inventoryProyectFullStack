@@ -15,6 +15,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+/**
+ * Implementación del servicio de gestión de proveedores.
+ * <p>
+ * Proporciona la lógica de negocio para operaciones CRUD de proveedores,
+ * con validaciones de unicidad para email y teléfono.
+ * </p>
+ */
 @Service
 public class SupplierService implements ISupplierService {
 

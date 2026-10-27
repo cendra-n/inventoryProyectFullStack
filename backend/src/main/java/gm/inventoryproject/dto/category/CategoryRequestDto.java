@@ -7,6 +7,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Data Transfer Object para la creación o actualización de categorías.
+ * <p>
+ * Contiene los datos necesarios para crear una nueva categoría o
+ * actualizar una existente, con validaciones de formato y longitud.
+ * </p>
+ */
 @Getter
 @Setter
 public class CategoryRequestDto {

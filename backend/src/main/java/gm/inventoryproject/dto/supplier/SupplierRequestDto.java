@@ -5,6 +5,13 @@ import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Data Transfer Object para la creación o actualización de proveedores.
+ * <p>
+ * Contiene los datos necesarios para crear un nuevo proveedor o
+ * actualizar uno existente, con validaciones de formato para email y teléfono.
+ * </p>
+ */
 @Getter
 @Setter
 public class SupplierRequestDto {

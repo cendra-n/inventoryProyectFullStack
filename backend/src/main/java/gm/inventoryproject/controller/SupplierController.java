@@ -16,6 +16,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.util.List;
 
+/**
+ * Controlador REST para la gestión de proveedores.
+ * <p>
+ * Expone endpoints para realizar operaciones CRUD sobre proveedores,
+ * con validaciones de unicidad en email y teléfono.
+ * </p>
+ */
 @RestController
 @RequestMapping("/inventory-app/suppliers")
 @Tag(name = "Supplier", description = "Endpoints para administrar proveedores")

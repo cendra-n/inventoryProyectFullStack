@@ -12,12 +12,29 @@ import org.springframework.stereotype.Service;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
+/**
+ * Servicio para la generación de reportes en formato PDF.
+ * <p>
+ * Utiliza la librería iText para generar documentos PDF con listados
+ * de productos, incluyendo información de categorías y proveedores.
+ * </p>
+ */
 @Service
 public class PdfReportService {
 
     @Autowired
     private ProductRepository productRepository;
 
+    /**
+     * Genera un PDF con la lista completa de productos.
+     * <p>
+     * El PDF incluye el logo de la aplicación, título y una tabla con
+     * los datos de productos, categorías y proveedores.
+     * </p>
+     * @return InputStream con el contenido del PDF generado.
+     * @throws Exception si ocurre un error durante la generación del PDF
+     *         o si no se encuentra el archivo de logo.
+     */
     public ByteArrayInputStream generateProductListPdf() throws Exception {
 
         Document document = new Document(PageSize.A4.rotate()); // A4 apaisado para más columnas

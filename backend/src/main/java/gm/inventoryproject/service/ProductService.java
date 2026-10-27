@@ -15,6 +15,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+/**
+ * Implementación del servicio de gestión de productos.
+ * <p>
+ * Proporciona la lógica de negocio para productos, con restricciones
+ * especiales para actualizaciones cuando el producto tiene movimientos
+ * de inventario registrados.
+ * </p>
+ */
 @Service
 @RequiredArgsConstructor
 public class ProductService implements IProductService {
@@ -75,6 +83,19 @@ public class ProductService implements IProductService {
     // ---------------------------------------------------------
     @Override
     @Transactional
+    /**
+     * Actualiza un producto existente.
+     * <p>
+     * Si el producto tiene movimientos de inventario registrados, solo permite
+     * modificar nombre, descripción y precio. La categoría y proveedor no pueden cambiarse
+     * para mantener la integridad del historial de movimientos.
+     * </p>
+     * @param id Identificador del producto a actualizar.
+     * @param dto Datos actualizados del producto.
+     * @return El producto actualizado.
+     * @throws ResourceNotFoundException si no existe un producto con el ID proporcionado.
+     * @throws DuplicateFieldException si el nuevo nombre ya está en uso por otro producto.
+     */
     public Product update(Long id, ProductRequestDto dto) {
 
         Product existing = getById(id);

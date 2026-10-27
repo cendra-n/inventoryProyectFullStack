@@ -5,6 +5,13 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
 
+/**
+ * Representa un movimiento de inventario de un producto.
+ * <p>
+ * Registra entradas (IN) o salidas (OUT) de stock, actualizando
+ * automáticamente el inventario del producto asociado.
+ * </p>
+ */
 @Entity
 @Table(name = "inventory_movements")
 @Getter @Setter
@@ -30,6 +37,13 @@ public class InventoryMovement {
     @JoinColumn(name = "product_id")
     private Product product; // producto
 
+    /**
+     * Tipo de movimiento de inventario.
+     * <p>
+     * IN: entrada de stock (incrementa inventario).
+     * OUT: salida de stock (decrementa inventario).
+     * </p>
+     */
     public enum MovementType {
         IN, OUT // ENTRADA / SALIDA
     }

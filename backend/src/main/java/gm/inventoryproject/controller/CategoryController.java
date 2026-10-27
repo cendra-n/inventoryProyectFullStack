@@ -18,6 +18,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Controlador REST para la gestión de categorías.
+ * <p>
+ * Expone endpoints para realizar operaciones CRUD sobre categorías,
+ * con mapeo manual entre entidades y DTOs.
+ * </p>
+ */
 @RestController
 @RequestMapping("inventory-app/categories")
 @RequiredArgsConstructor
