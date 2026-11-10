@@ -9,6 +9,7 @@ import gm.inventoryproject.model.Product;
 import gm.inventoryproject.model.Supplier;
 import gm.inventoryproject.repository.InventoryMovementRepository;
 import gm.inventoryproject.repository.ProductRepository;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -31,6 +32,7 @@ import static org.mockito.Mockito.*;
  * Verifica la lógica de negocio utilizando Mockito para los repositorios y servicios.
  * </p>
  */
+@DisplayName("Tests de ProductService con Mockito")
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
 
@@ -53,6 +55,7 @@ class ProductServiceTest {
     // GET ALL
     // ---------------------------------------------------------
     @Test
+    @DisplayName("Obtener todos los productos retorna lista completa")
     void testGetAll() {
         // Arrange
         Category cat1 = Category.builder().id(1L).name("Bebidas").build();
@@ -94,6 +97,7 @@ class ProductServiceTest {
     // GET BY ID
     // ---------------------------------------------------------
     @Test
+    @DisplayName("Obtener producto por ID existente retorna el producto")
     void testGetByIdSuccess() {
         // Arrange
         Long id = 1L;
@@ -120,6 +124,7 @@ class ProductServiceTest {
     }
 
     @Test
+    @DisplayName("Obtener producto por ID inexistente lanza ResourceNotFoundException")
     void testGetByIdNotFound() {
         // Arrange
         Long id = 999L;
@@ -138,6 +143,7 @@ class ProductServiceTest {
     // SEARCH BY NAME
     // ---------------------------------------------------------
     @Test
+    @DisplayName("Buscar productos por nombre retorna coincidencias parciales")
     void testSearchByName() {
         // Arrange
         String searchTerm = "agua";
@@ -174,6 +180,7 @@ class ProductServiceTest {
     // CREATE
     // ---------------------------------------------------------
     @Test
+    @DisplayName("Crear producto con nombre único retorna producto guardado")
     void testCreateSuccess() {
         // Arrange
         Category category = Category.builder().id(1L).name("Bebidas").build();
@@ -212,6 +219,7 @@ class ProductServiceTest {
     }
 
     @Test
+    @DisplayName("Crear producto con nombre duplicado lanza DuplicateFieldException")
     void testCreateDuplicateName() {
         // Arrange
         Category category = Category.builder().id(1L).name("Bebidas").build();
@@ -241,6 +249,7 @@ class ProductServiceTest {
     // UPDATE
     // ---------------------------------------------------------
     @Test
+    @DisplayName("Actualizar producto sin movimientos permite cambiar categoría y proveedor")
     void testUpdateSuccessWithoutMovements() {
         // Arrange
         Long id = 1L;
@@ -303,7 +312,13 @@ class ProductServiceTest {
         verify(productRepository, times(1)).save(any(Product.class));
     }
 
+    /**
+     * Verifica que al actualizar un producto con movimientos de inventario,
+     * no se permite cambiar la categoría ni el proveedor para mantener
+     * la integridad de los movimientos históricos.
+     */
     @Test
+    @DisplayName("Actualizar producto con movimientos no permite cambiar categoría ni proveedor")
     void testUpdateSuccessWithMovements() {
         // Arrange
         Long id = 1L;
@@ -362,6 +377,7 @@ class ProductServiceTest {
     }
 
     @Test
+    @DisplayName("Actualizar producto con el mismo nombre no verifica duplicado")
     void testUpdateSameName() {
         // Arrange
         Long id = 1L;
@@ -413,7 +429,13 @@ class ProductServiceTest {
         verify(productRepository, times(1)).save(any(Product.class));
     }
 
+    /**
+     * Verifica que al actualizar un producto con el mismo nombre pero diferente case
+     * (ej: "botella de agua" -> "BOTELLA DE AGUA"), no se llama a existsByName
+     * porque se considera el mismo nombre. Este comportamiento permite cambiar el case sin error.
+     */
     @Test
+    @DisplayName("Actualizar producto con mismo nombre diferente case no verifica duplicado")
     void testUpdateSameNameDifferentCase() {
         // Arrange
         Long id = 1L;
@@ -465,6 +487,7 @@ class ProductServiceTest {
     }
 
     @Test
+    @DisplayName("Actualizar producto inexistente lanza ResourceNotFoundException")
     void testUpdateNotFound() {
         // Arrange
         Long id = 999L;
@@ -491,6 +514,7 @@ class ProductServiceTest {
     }
 
     @Test
+    @DisplayName("Actualizar producto con nombre duplicado lanza DuplicateFieldException")
     void testUpdateDuplicateName() {
         // Arrange
         Long id = 1L;
@@ -533,6 +557,7 @@ class ProductServiceTest {
     // DELETE
     // ---------------------------------------------------------
     @Test
+    @DisplayName("Eliminar producto existente sin movimientos elimina el producto")
     void testDeleteSuccess() {
         // Arrange
         Long id = 1L;
@@ -561,6 +586,7 @@ class ProductServiceTest {
     }
 
     @Test
+    @DisplayName("Eliminar producto inexistente lanza ResourceNotFoundException")
     void testDeleteNotFound() {
         // Arrange
         Long id = 999L;
@@ -578,6 +604,7 @@ class ProductServiceTest {
     }
 
     @Test
+    @DisplayName("Eliminar producto con movimientos lanza ProductHasMovementsException")
     void testDeleteHasMovements() {
         // Arrange
         Long id = 1L;
@@ -606,7 +633,12 @@ class ProductServiceTest {
         verify(productRepository, never()).delete(any(Product.class));
     }
 
+    /**
+     * Verifica que un producto puede tener stock inicial pero aún así ser eliminado
+     * si no tiene movimientos de inventario registrados.
+     */
     @Test
+    @DisplayName("Eliminar producto con stock pero sin movimientos elimina el producto")
     void testDeleteWithStockButNoMovements() {
         // Arrange
         Long id = 1L;

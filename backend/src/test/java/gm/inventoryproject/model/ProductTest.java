@@ -1,5 +1,6 @@
 package gm.inventoryproject.model;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -11,9 +12,11 @@ import static org.junit.jupiter.api.Assertions.*;
  * getters/setters y valores por defecto utilizando JUnit 5 puro.
  * </p>
  */
+@DisplayName("Tests de Product model con JUnit puro")
 class ProductTest {
 
     @Test
+    @DisplayName("Builder crea instancia con todos los campos correctamente")
     void testBuilder() {
         // Arrange
         Long expectedId = 1L;
@@ -48,6 +51,7 @@ class ProductTest {
     }
 
     @Test
+    @DisplayName("Constructor sin argumentos crea instancia con stock inicializado en 0")
     void testNoArgsConstructor() {
         // Act
         Product product = new Product();
@@ -64,6 +68,7 @@ class ProductTest {
     }
 
     @Test
+    @DisplayName("Constructor con todos los argumentos inicializa correctamente los campos")
     void testAllArgsConstructor() {
         // Arrange
         Long expectedId = 2L;
@@ -98,6 +103,7 @@ class ProductTest {
     }
 
     @Test
+    @DisplayName("Setters y getters actualizan y retornan los valores correctamente")
     void testSettersAndGetters() {
         // Arrange
         Product product = new Product();
@@ -126,6 +132,7 @@ class ProductTest {
     }
 
     @Test
+    @DisplayName("Builder sin ID crea instancia con ID null")
     void testBuilderWithoutId() {
         // Arrange
         String expectedName = "Sprite";
@@ -157,7 +164,12 @@ class ProductTest {
         );
     }
 
+    /**
+     * Verifica que el builder sin @Builder.Default no respeta el inicializador
+     * del campo stock = 0, dejándolo como null cuando no se especifica explícitamente.
+     */
     @Test
+    @DisplayName("Builder con solo campos requeridos deja stock como null")
     void testBuilderWithOnlyRequiredFields() {
         // Arrange
         String expectedName = "Producto Test";
@@ -183,7 +195,12 @@ class ProductTest {
         );
     }
 
+    /**
+     * Verifica que el builder sin @Builder.Default no respeta el inicializador
+     * del campo (stock = 0), mientras que el constructor no-args sí lo respeta.
+     */
     @Test
+    @DisplayName("Builder sin @Builder.Default no respeta inicializador de stock")
     void testBuilderStockBehavior() {
         // Arrange & Act
         Product productWithBuilder = Product.builder()
@@ -201,6 +218,7 @@ class ProductTest {
     }
 
     @Test
+    @DisplayName("Builder con stock explícito en cero respeta el valor")
     void testBuilderWithExplicitStockZero() {
         // Arrange & Act
         Product product = Product.builder()

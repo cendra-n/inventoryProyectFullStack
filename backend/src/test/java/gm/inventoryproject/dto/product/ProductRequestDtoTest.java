@@ -4,6 +4,7 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
@@ -16,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Verifica las validaciones de Bean Validation utilizando el Validator real.
  * </p>
  */
+@DisplayName("Tests de validación de ProductRequestDto")
 class ProductRequestDtoTest {
 
     private Validator validator;
@@ -26,6 +28,7 @@ class ProductRequestDtoTest {
     }
 
     @Test
+    @DisplayName("DTO válido no tiene violaciones de validación")
     void testValidDto() {
         // Arrange
         ProductRequestDto dto = new ProductRequestDto();
@@ -47,6 +50,7 @@ class ProductRequestDtoTest {
     // NAME VALIDATIONS
     // ---------------------------------------------------------
     @Test
+    @DisplayName("Nombre nulo genera violación de @NotBlank")
     void testNameNull() {
         // Arrange
         ProductRequestDto dto = new ProductRequestDto();
@@ -68,6 +72,7 @@ class ProductRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Nombre vacío genera violación de @NotBlank")
     void testNameEmpty() {
         // Arrange
         ProductRequestDto dto = new ProductRequestDto();
@@ -89,6 +94,7 @@ class ProductRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Nombre con solo espacios genera violación de @NotBlank")
     void testNameOnlySpaces() {
         // Arrange
         ProductRequestDto dto = new ProductRequestDto();
@@ -110,6 +116,7 @@ class ProductRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Nombre con menos de 2 caracteres genera violación de @Size")
     void testNameTooShort() {
         // Arrange
         ProductRequestDto dto = new ProductRequestDto();
@@ -131,6 +138,7 @@ class ProductRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Nombre con 2 caracteres es válido")
     void testNameMinLengthValid() {
         // Arrange
         ProductRequestDto dto = new ProductRequestDto();
@@ -149,6 +157,7 @@ class ProductRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Nombre con 40 caracteres es válido")
     void testNameMaxLengthValid() {
         // Arrange
         ProductRequestDto dto = new ProductRequestDto();
@@ -167,6 +176,7 @@ class ProductRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Nombre con más de 40 caracteres genera violación de @Size")
     void testNameTooLong() {
         // Arrange
         ProductRequestDto dto = new ProductRequestDto();
@@ -188,6 +198,7 @@ class ProductRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Nombre con caracteres especiales genera violación de @Pattern")
     void testNameWithSpecialCharacters() {
         // Arrange
         ProductRequestDto dto = new ProductRequestDto();
@@ -209,6 +220,7 @@ class ProductRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Nombre con acentos es válido")
     void testNameWithAccentsValid() {
         // Arrange
         ProductRequestDto dto = new ProductRequestDto();
@@ -227,6 +239,7 @@ class ProductRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Nombre con números es válido")
     void testNameWithNumbersValid() {
         // Arrange
         ProductRequestDto dto = new ProductRequestDto();
@@ -248,6 +261,7 @@ class ProductRequestDtoTest {
     // DESCRIPTION VALIDATIONS
     // ---------------------------------------------------------
     @Test
+    @DisplayName("Descripción nula genera violación de @NotBlank")
     void testDescriptionNull() {
         // Arrange
         ProductRequestDto dto = new ProductRequestDto();
@@ -269,6 +283,7 @@ class ProductRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Descripción vacía genera violación de @NotBlank")
     void testDescriptionEmpty() {
         // Arrange
         ProductRequestDto dto = new ProductRequestDto();
@@ -290,6 +305,7 @@ class ProductRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Descripción con solo espacios genera violación de @NotBlank")
     void testDescriptionOnlySpaces() {
         // Arrange
         ProductRequestDto dto = new ProductRequestDto();
@@ -311,6 +327,7 @@ class ProductRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Descripción con 240 caracteres es válida")
     void testDescriptionMaxLengthValid() {
         // Arrange
         ProductRequestDto dto = new ProductRequestDto();
@@ -329,6 +346,7 @@ class ProductRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Descripción con más de 240 caracteres genera violación de @Size")
     void testDescriptionTooLong() {
         // Arrange
         ProductRequestDto dto = new ProductRequestDto();
@@ -350,6 +368,7 @@ class ProductRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Descripción con caracteres especiales inválidos genera violación de @Pattern")
     void testDescriptionWithInvalidSpecialCharacters() {
         // Arrange
         ProductRequestDto dto = new ProductRequestDto();
@@ -371,6 +390,7 @@ class ProductRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Descripción con caracteres especiales válidos es aceptada")
     void testDescriptionWithValidSpecialCharacters() {
         // Arrange
         ProductRequestDto dto = new ProductRequestDto();
@@ -392,6 +412,7 @@ class ProductRequestDtoTest {
     // PRICE VALIDATIONS
     // ---------------------------------------------------------
     @Test
+    @DisplayName("Precio nulo genera violación de @NotNull")
     void testPriceNull() {
         // Arrange
         ProductRequestDto dto = new ProductRequestDto();
@@ -413,6 +434,7 @@ class ProductRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Precio cero genera violación de @Positive")
     void testPriceZero() {
         // Arrange
         ProductRequestDto dto = new ProductRequestDto();
@@ -434,6 +456,7 @@ class ProductRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Precio negativo genera violación de @Positive")
     void testPriceNegative() {
         // Arrange
         ProductRequestDto dto = new ProductRequestDto();
@@ -455,6 +478,7 @@ class ProductRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Precio positivo es válido")
     void testPricePositiveValid() {
         // Arrange
         ProductRequestDto dto = new ProductRequestDto();
@@ -476,6 +500,7 @@ class ProductRequestDtoTest {
     // STOCK VALIDATIONS
     // ---------------------------------------------------------
     @Test
+    @DisplayName("Stock nulo genera violación de @NotNull")
     void testStockNull() {
         // Arrange
         ProductRequestDto dto = new ProductRequestDto();
@@ -497,6 +522,7 @@ class ProductRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Stock negativo genera violación de @PositiveOrZero")
     void testStockNegative() {
         // Arrange
         ProductRequestDto dto = new ProductRequestDto();
@@ -518,6 +544,7 @@ class ProductRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Stock cero es válido")
     void testStockZeroValid() {
         // Arrange
         ProductRequestDto dto = new ProductRequestDto();
@@ -536,6 +563,7 @@ class ProductRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Stock positivo es válido")
     void testStockPositiveValid() {
         // Arrange
         ProductRequestDto dto = new ProductRequestDto();
@@ -557,6 +585,7 @@ class ProductRequestDtoTest {
     // CATEGORY ID VALIDATIONS
     // ---------------------------------------------------------
     @Test
+    @DisplayName("CategoryId nulo genera violación de @NotNull")
     void testCategoryIdNull() {
         // Arrange
         ProductRequestDto dto = new ProductRequestDto();
@@ -581,6 +610,7 @@ class ProductRequestDtoTest {
     // SUPPLIER ID VALIDATIONS
     // ---------------------------------------------------------
     @Test
+    @DisplayName("SupplierId nulo genera violación de @NotNull")
     void testSupplierIdNull() {
         // Arrange
         ProductRequestDto dto = new ProductRequestDto();
@@ -605,6 +635,7 @@ class ProductRequestDtoTest {
     // MULTIPLE VIOLATIONS
     // ---------------------------------------------------------
     @Test
+    @DisplayName("Múltiples campos inválidos generan múltiples violaciones")
     void testMultipleViolations() {
         // Arrange
         ProductRequestDto dto = new ProductRequestDto();

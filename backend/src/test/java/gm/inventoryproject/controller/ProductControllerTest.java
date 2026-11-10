@@ -12,6 +12,7 @@ import gm.inventoryproject.model.Supplier;
 import gm.inventoryproject.service.ICategoryService;
 import gm.inventoryproject.service.IProductService;
 import gm.inventoryproject.service.ISupplierService;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -36,6 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Verifica los endpoints HTTP utilizando @WebMvcTest y MockMvc.
  * </p>
  */
+@DisplayName("Tests de ProductController con @WebMvcTest")
 @WebMvcTest(ProductController.class)
 class ProductControllerTest {
 
@@ -58,6 +60,7 @@ class ProductControllerTest {
     // CREATE
     // ------------------------------------------------------
     @Test
+    @DisplayName("Crear producto válido retorna 201 Created con producto creado")
     void testCreateSuccess() throws Exception {
         // Arrange
         ProductRequestDto requestDto = new ProductRequestDto();
@@ -101,6 +104,7 @@ class ProductControllerTest {
     }
 
     @Test
+    @DisplayName("Crear producto con datos inválidos retorna 400 Bad Request con errores")
     void testCreateValidationError() throws Exception {
         // Arrange
         ProductRequestDto requestDto = new ProductRequestDto();
@@ -123,6 +127,7 @@ class ProductControllerTest {
     }
 
     @Test
+    @DisplayName("Crear producto con nombre duplicado retorna 400 Bad Request con error de duplicado")
     void testCreateDuplicateName() throws Exception {
         // Arrange
         ProductRequestDto requestDto = new ProductRequestDto();
@@ -156,6 +161,7 @@ class ProductControllerTest {
     // GET ALL
     // ------------------------------------------------------
     @Test
+    @DisplayName("Obtener todos los productos retorna 200 OK con lista de productos")
     void testFindAll() throws Exception {
         // Arrange
         Category cat1 = Category.builder().id(1L).name("Bebidas").build();
@@ -197,6 +203,7 @@ class ProductControllerTest {
     // GET BY ID
     // ------------------------------------------------------
     @Test
+    @DisplayName("Obtener producto por ID existente retorna 200 OK con producto")
     void testFindByIdSuccess() throws Exception {
         // Arrange
         Category category = Category.builder().id(1L).name("Bebidas").build();
@@ -228,6 +235,7 @@ class ProductControllerTest {
     }
 
     @Test
+    @DisplayName("Obtener producto por ID inexistente retorna 404 Not Found")
     void testFindByIdNotFound() throws Exception {
         // Arrange
         when(productService.getById(999L))
@@ -246,6 +254,7 @@ class ProductControllerTest {
     // SEARCH BY NAME
     // ------------------------------------------------------
     @Test
+    @DisplayName("Buscar productos por nombre retorna 200 OK con coincidencias")
     void testSearchByName() throws Exception {
         // Arrange
         Category cat1 = Category.builder().id(1L).name("Bebidas").build();
@@ -282,6 +291,7 @@ class ProductControllerTest {
     // UPDATE
     // ------------------------------------------------------
     @Test
+    @DisplayName("Actualizar producto válido retorna 200 OK con producto actualizado")
     void testUpdateSuccess() throws Exception {
         // Arrange
         ProductRequestDto requestDto = new ProductRequestDto();
@@ -321,6 +331,7 @@ class ProductControllerTest {
     }
 
     @Test
+    @DisplayName("Actualizar producto con datos inválidos retorna 400 Bad Request con errores")
     void testUpdateValidationError() throws Exception {
         // Arrange
         ProductRequestDto requestDto = new ProductRequestDto();
@@ -343,6 +354,7 @@ class ProductControllerTest {
     }
 
     @Test
+    @DisplayName("Actualizar producto inexistente retorna 404 Not Found")
     void testUpdateNotFound() throws Exception {
         // Arrange
         ProductRequestDto requestDto = new ProductRequestDto();
@@ -368,6 +380,7 @@ class ProductControllerTest {
     }
 
     @Test
+    @DisplayName("Actualizar producto con nombre duplicado retorna 400 Bad Request con error de duplicado")
     void testUpdateDuplicateName() throws Exception {
         // Arrange
         ProductRequestDto requestDto = new ProductRequestDto();
@@ -396,6 +409,7 @@ class ProductControllerTest {
     // DELETE
     // ------------------------------------------------------
     @Test
+    @DisplayName("Eliminar producto existente retorna 204 No Content")
     void testDeleteSuccess() throws Exception {
         // Arrange
         doNothing().when(productService).delete(anyLong());
@@ -406,6 +420,7 @@ class ProductControllerTest {
     }
 
     @Test
+    @DisplayName("Eliminar producto inexistente retorna 404 Not Found")
     void testDeleteNotFound() throws Exception {
         // Arrange
         doThrow(new ResourceNotFoundException("No se encontró un producto con ID: 999"))
@@ -420,7 +435,13 @@ class ProductControllerTest {
                 .andExpect(jsonPath("$.message").value("No se encontró un producto con ID: 999"));
     }
 
+    /**
+     * Verifica que ProductHasMovementsException retorna 409 Conflict con un Map
+     * que contiene solo la clave "error" (sin timestamp ni status), siguiendo el
+     * comportamiento específico del GlobalExceptionHandler para esta excepción.
+     */
     @Test
+    @DisplayName("Eliminar producto con movimientos retorna 409 Conflict con Map de error")
     void testDeleteHasMovements() throws Exception {
         // Arrange
         doThrow(new ProductHasMovementsException(
