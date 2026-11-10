@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
+import org.mockito.InOrder;
 
 /**
  * Tests unitarios para SupplierService.
@@ -503,6 +504,30 @@ class SupplierServiceTest {
         verify(supplierRepository, times(1)).deleteById(id);
     }
 
+    /**
+     * Verifica que al eliminar un proveedor exitosamente, se consulta existsById
+     * antes de existsBySupplierId y luego se llama a deleteById.
+     */
+    @Test
+    @DisplayName("Eliminar proveedor verifica orden de llamadas a repositorios")
+    void testDeleteSuccessInOrder() {
+        // Arrange
+        Long id = 1L;
+        when(supplierRepository.existsById(id)).thenReturn(true);
+        when(productRepository.existsBySupplierId(id)).thenReturn(false);
+        doNothing().when(supplierRepository).deleteById(id);
+
+        InOrder inOrder = inOrder(supplierRepository, productRepository);
+
+        // Act
+        supplierService.delete(id);
+
+        // Assert
+        inOrder.verify(supplierRepository).existsById(id);
+        inOrder.verify(productRepository).existsBySupplierId(id);
+        inOrder.verify(supplierRepository).deleteById(id);
+    }
+
     @Test
     @DisplayName("Eliminar proveedor inexistente lanza ResourceNotFoundException")
     void testDeleteNotFound() {
@@ -519,6 +544,30 @@ class SupplierServiceTest {
         verify(supplierRepository, times(1)).existsById(id);
         verify(productRepository, never()).existsBySupplierId(anyLong());
         verify(supplierRepository, never()).deleteById(anyLong());
+    }
+
+    /**
+     * Verifica que al intentar eliminar un proveedor inexistente, solo se llama
+     * a existsById y no se realizan más llamadas a los repositorios.
+     */
+    @Test
+    @DisplayName("Eliminar proveedor inexistente verifica que no se llama a existsBySupplierId ni deleteById")
+    void testDeleteNotFoundInOrder() {
+        // Arrange
+        Long id = 999L;
+        when(supplierRepository.existsById(id)).thenReturn(false);
+
+        InOrder inOrder = inOrder(supplierRepository, productRepository);
+
+        // Act & Assert
+        ResourceNotFoundException exception = assertThrows(
+                ResourceNotFoundException.class,
+                () -> supplierService.delete(id)
+        );
+        assertEquals("Proveedor no encontrado con id: " + id, exception.getMessage());
+
+        inOrder.verify(supplierRepository).existsById(id);
+        inOrder.verifyNoMoreInteractions();
     }
 
     @Test
@@ -538,6 +587,32 @@ class SupplierServiceTest {
         verify(supplierRepository, times(1)).existsById(id);
         verify(productRepository, times(1)).existsBySupplierId(id);
         verify(supplierRepository, never()).deleteById(anyLong());
+    }
+
+    /**
+     * Verifica que al intentar eliminar un proveedor con productos asociados,
+     * se consulta existsById antes de existsBySupplierId y nunca se llama a deleteById.
+     */
+    @Test
+    @DisplayName("Eliminar proveedor con productos verifica orden y que deleteById no se llama")
+    void testDeleteHasProductsInOrder() {
+        // Arrange
+        Long id = 1L;
+        when(supplierRepository.existsById(id)).thenReturn(true);
+        when(productRepository.existsBySupplierId(id)).thenReturn(true);
+
+        InOrder inOrder = inOrder(supplierRepository, productRepository);
+
+        // Act & Assert
+        SupplierHasProductsException exception = assertThrows(
+                SupplierHasProductsException.class,
+                () -> supplierService.delete(id)
+        );
+        assertEquals("No se puede eliminar el proveedor porque tiene productos asociados", exception.getMessage());
+
+        inOrder.verify(supplierRepository).existsById(id);
+        inOrder.verify(productRepository).existsBySupplierId(id);
+        inOrder.verify(supplierRepository, never()).deleteById(anyLong());
     }
 
 }

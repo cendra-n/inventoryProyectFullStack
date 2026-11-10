@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
+import org.mockito.InOrder;
 
 /**
  * Tests unitarios para CategoryService.
@@ -357,6 +358,30 @@ class CategoryServiceTest {
         verify(categoryRepository, times(1)).deleteById(id);
     }
 
+    /**
+     * Verifica que al eliminar una categoría exitosamente, se consulta existsById
+     * antes de existsByCategoryId y luego se llama a deleteById.
+     */
+    @Test
+    @DisplayName("Eliminar categoría verifica orden de llamadas a repositorios")
+    void testDeleteSuccessInOrder() {
+        // Arrange
+        Long id = 1L;
+        when(categoryRepository.existsById(id)).thenReturn(true);
+        when(productRepository.existsByCategoryId(id)).thenReturn(false);
+        doNothing().when(categoryRepository).deleteById(id);
+
+        InOrder inOrder = inOrder(categoryRepository, productRepository);
+
+        // Act
+        categoryService.delete(id);
+
+        // Assert
+        inOrder.verify(categoryRepository).existsById(id);
+        inOrder.verify(productRepository).existsByCategoryId(id);
+        inOrder.verify(categoryRepository).deleteById(id);
+    }
+
     @Test
     @DisplayName("Eliminar categoría inexistente lanza ResourceNotFoundException")
     void testDeleteNotFound() {
@@ -373,6 +398,30 @@ class CategoryServiceTest {
         verify(categoryRepository, times(1)).existsById(id);
         verify(productRepository, never()).existsByCategoryId(anyLong());
         verify(categoryRepository, never()).deleteById(anyLong());
+    }
+
+    /**
+     * Verifica que al intentar eliminar una categoría inexistente, solo se llama
+     * a existsById y no se realizan más llamadas a los repositorios.
+     */
+    @Test
+    @DisplayName("Eliminar categoría inexistente verifica que no se llama a existsByCategoryId ni deleteById")
+    void testDeleteNotFoundInOrder() {
+        // Arrange
+        Long id = 999L;
+        when(categoryRepository.existsById(id)).thenReturn(false);
+
+        InOrder inOrder = inOrder(categoryRepository, productRepository);
+
+        // Act & Assert
+        ResourceNotFoundException exception = assertThrows(
+                ResourceNotFoundException.class,
+                () -> categoryService.delete(id)
+        );
+        assertEquals("Categoría no encontrada con id: " + id, exception.getMessage());
+
+        inOrder.verify(categoryRepository).existsById(id);
+        inOrder.verifyNoMoreInteractions();
     }
 
     @Test
@@ -392,5 +441,31 @@ class CategoryServiceTest {
         verify(categoryRepository, times(1)).existsById(id);
         verify(productRepository, times(1)).existsByCategoryId(id);
         verify(categoryRepository, never()).deleteById(anyLong());
+    }
+
+    /**
+     * Verifica que al intentar eliminar una categoría con productos asociados,
+     * se consulta existsById antes de existsByCategoryId y nunca se llama a deleteById.
+     */
+    @Test
+    @DisplayName("Eliminar categoría con productos verifica orden y que deleteById no se llama")
+    void testDeleteHasProductsInOrder() {
+        // Arrange
+        Long id = 1L;
+        when(categoryRepository.existsById(id)).thenReturn(true);
+        when(productRepository.existsByCategoryId(id)).thenReturn(true);
+
+        InOrder inOrder = inOrder(categoryRepository, productRepository);
+
+        // Act & Assert
+        CategoryHasProductsException exception = assertThrows(
+                CategoryHasProductsException.class,
+                () -> categoryService.delete(id)
+        );
+        assertEquals("No se puede eliminar la categoría porque tiene productos asociados", exception.getMessage());
+
+        inOrder.verify(categoryRepository).existsById(id);
+        inOrder.verify(productRepository).existsByCategoryId(id);
+        inOrder.verify(categoryRepository, never()).deleteById(anyLong());
     }
 }

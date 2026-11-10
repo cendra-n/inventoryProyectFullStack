@@ -25,6 +25,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
+import org.mockito.ArgumentCaptor;
 
 /**
  * Tests unitarios para ProductService.
@@ -374,6 +375,125 @@ class ProductServiceTest {
         verify(categoryService, never()).getById(anyLong());
         verify(supplierService, never()).getById(anyLong());
         verify(productRepository, times(1)).save(any(Product.class));
+    }
+
+    /**
+     * Verifica que al actualizar un producto sin movimientos, el stock persistido
+     * no cambia y la categoría y proveedor se reemplazan correctamente.
+     */
+    @Test
+    @DisplayName("Actualizar producto sin movimientos verifica stock persistido y reemplazo de categoría/proveedor")
+    void testUpdateWithoutMovementsStockAndReplacements() {
+        // Arrange
+        Long id = 1L;
+        Category oldCategory = Category.builder().id(1L).name("Bebidas").build();
+        Supplier oldSupplier = Supplier.builder().id(4L).name("Simeflat SA").build();
+        Product existing = Product.builder()
+                .id(id)
+                .name("Nombre Antiguo")
+                .description("Descripción antigua")
+                .price(100.0)
+                .stock(15)
+                .category(oldCategory)
+                .supplier(oldSupplier)
+                .build();
+
+        ProductRequestDto dto = new ProductRequestDto();
+        dto.setName("Nombre Nuevo");
+        dto.setDescription("Descripción nueva");
+        dto.setPrice(200.0);
+        dto.setStock(50); // Este valor no debería afectar el stock
+        dto.setCategoryId(2L);
+        dto.setSupplierId(5L);
+
+        Category newCategory = Category.builder().id(2L).name("Alimentos").build();
+        Supplier newSupplier = Supplier.builder().id(5L).name("Tech Solutions").build();
+
+        Product saved = Product.builder()
+                .id(id)
+                .name("Nombre Nuevo")
+                .description("Descripción nueva")
+                .price(200.0)
+                .stock(15) // Stock no se modifica
+                .category(newCategory)
+                .supplier(newSupplier)
+                .build();
+
+        ArgumentCaptor<Product> productCaptor = ArgumentCaptor.forClass(Product.class);
+
+        when(productRepository.findById(id)).thenReturn(Optional.of(existing));
+        when(productRepository.existsByName("Nombre Nuevo")).thenReturn(false);
+        when(inventoryMovementRepository.existsByProductId(id)).thenReturn(false);
+        when(categoryService.getById(2L)).thenReturn(newCategory);
+        when(supplierService.getById(5L)).thenReturn(newSupplier);
+        when(productRepository.save(any(Product.class))).thenReturn(saved);
+
+        // Act
+        productService.update(id, dto);
+
+        // Assert
+        verify(productRepository, times(1)).save(productCaptor.capture());
+        Product capturedProduct = productCaptor.getValue();
+        assertEquals(15, capturedProduct.getStock(), "El stock persistido debería mantenerse en 15");
+        assertEquals(newCategory, capturedProduct.getCategory(), "La categoría debería reemplazarse");
+        assertEquals(newSupplier, capturedProduct.getSupplier(), "El proveedor debería reemplazarse");
+    }
+
+    /**
+     * Verifica que al actualizar un producto con movimientos, el stock persistido
+     * no cambia y la categoría y proveedor no se reemplazan.
+     */
+    @Test
+    @DisplayName("Actualizar producto con movimientos verifica stock persistido y sin reemplazo de categoría/proveedor")
+    void testUpdateWithMovementsStockAndNoReplacements() {
+        // Arrange
+        Long id = 1L;
+        Category category = Category.builder().id(1L).name("Bebidas").build();
+        Supplier supplier = Supplier.builder().id(4L).name("Simeflat SA").build();
+        Product existing = Product.builder()
+                .id(id)
+                .name("Nombre Antiguo")
+                .description("Descripción antigua")
+                .price(100.0)
+                .stock(25)
+                .category(category)
+                .supplier(supplier)
+                .build();
+
+        ProductRequestDto dto = new ProductRequestDto();
+        dto.setName("Nombre Nuevo");
+        dto.setDescription("Descripción nueva");
+        dto.setPrice(200.0);
+        dto.setStock(100); // Este valor no debería afectar el stock
+        dto.setCategoryId(2L);
+        dto.setSupplierId(5L);
+
+        Product saved = Product.builder()
+                .id(id)
+                .name("Nombre Nuevo")
+                .description("Descripción nueva")
+                .price(200.0)
+                .stock(25) // Stock no se modifica
+                .category(category) // Categoría no cambia
+                .supplier(supplier) // Proveedor no cambia
+                .build();
+
+        ArgumentCaptor<Product> productCaptor = ArgumentCaptor.forClass(Product.class);
+
+        when(productRepository.findById(id)).thenReturn(Optional.of(existing));
+        when(productRepository.existsByName("Nombre Nuevo")).thenReturn(false);
+        when(inventoryMovementRepository.existsByProductId(id)).thenReturn(true);
+        when(productRepository.save(any(Product.class))).thenReturn(saved);
+
+        // Act
+        productService.update(id, dto);
+
+        // Assert
+        verify(productRepository, times(1)).save(productCaptor.capture());
+        Product capturedProduct = productCaptor.getValue();
+        assertEquals(25, capturedProduct.getStock(), "El stock persistido debería mantenerse en 25");
+        assertEquals(category, capturedProduct.getCategory(), "La categoría no debería reemplazarse");
+        assertEquals(supplier, capturedProduct.getSupplier(), "El proveedor no debería reemplazarse");
     }
 
     @Test

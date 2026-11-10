@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
+import org.mockito.InOrder;
 
 /**
  * Tests unitarios para InventoryMovementService.
@@ -166,6 +167,51 @@ class InventoryMovementServiceTest {
         verify(movementRepository, times(1)).save(any(InventoryMovement.class));
     }
 
+    /**
+     * Verifica que en un movimiento IN exitoso se guarda primero el producto
+     * y después el movimiento, y que el stock persistido es correcto.
+     */
+    @Test
+    @DisplayName("Crear movimiento IN verifica orden de guardado y stock persistido")
+    void testCreateFromDtoInOrderAndStock() {
+        // Arrange
+        InventoryMovementRequestDto dto = new InventoryMovementRequestDto();
+        dto.setQuantity(15);
+        dto.setType("IN");
+        dto.setProductId(3L);
+
+        Product product = Product.builder()
+                .id(3L)
+                .name("Botella de agua")
+                .stock(25)
+                .build();
+
+        InventoryMovement saved = InventoryMovement.builder()
+                .id(1L)
+                .quantity(15)
+                .type(InventoryMovement.MovementType.IN)
+                .date(LocalDateTime.now())
+                .product(product)
+                .build();
+
+        ArgumentCaptor<Product> productCaptor = ArgumentCaptor.forClass(Product.class);
+        InOrder inOrder = inOrder(productRepository, movementRepository);
+
+        when(productRepository.findById(3L)).thenReturn(Optional.of(product));
+        when(productRepository.save(any(Product.class))).thenReturn(product);
+        when(movementRepository.save(any(InventoryMovement.class))).thenReturn(saved);
+
+        // Act
+        movementService.createFromDto(dto);
+
+        // Assert
+        inOrder.verify(productRepository).save(productCaptor.capture());
+        inOrder.verify(movementRepository).save(any(InventoryMovement.class));
+
+        Product capturedProduct = productCaptor.getValue();
+        assertEquals(40, capturedProduct.getStock(), "El stock persistido debería ser 25 + 15 = 40");
+    }
+
     @Test
     @DisplayName("Crear movimiento tipo OUT decrementa el stock del producto")
     void testCreateFromDtoSuccessOut() {
@@ -207,6 +253,51 @@ class InventoryMovementServiceTest {
         verify(movementRepository, times(1)).save(any(InventoryMovement.class));
     }
 
+    /**
+     * Verifica que en un movimiento OUT exitoso se guarda primero el producto
+     * y después el movimiento, y que el stock persistido es correcto.
+     */
+    @Test
+    @DisplayName("Crear movimiento OUT verifica orden de guardado y stock persistido")
+    void testCreateFromDtoOutOrderAndStock() {
+        // Arrange
+        InventoryMovementRequestDto dto = new InventoryMovementRequestDto();
+        dto.setQuantity(8);
+        dto.setType("OUT");
+        dto.setProductId(3L);
+
+        Product product = Product.builder()
+                .id(3L)
+                .name("Botella de agua")
+                .stock(30)
+                .build();
+
+        InventoryMovement saved = InventoryMovement.builder()
+                .id(1L)
+                .quantity(8)
+                .type(InventoryMovement.MovementType.OUT)
+                .date(LocalDateTime.now())
+                .product(product)
+                .build();
+
+        ArgumentCaptor<Product> productCaptor = ArgumentCaptor.forClass(Product.class);
+        InOrder inOrder = inOrder(productRepository, movementRepository);
+
+        when(productRepository.findById(3L)).thenReturn(Optional.of(product));
+        when(productRepository.save(any(Product.class))).thenReturn(product);
+        when(movementRepository.save(any(InventoryMovement.class))).thenReturn(saved);
+
+        // Act
+        movementService.createFromDto(dto);
+
+        // Assert
+        inOrder.verify(productRepository).save(productCaptor.capture());
+        inOrder.verify(movementRepository).save(any(InventoryMovement.class));
+
+        Product capturedProduct = productCaptor.getValue();
+        assertEquals(22, capturedProduct.getStock(), "El stock persistido debería ser 30 - 8 = 22");
+    }
+
     @Test
     @DisplayName("Crear movimiento con cantidad nula lanza IllegalArgumentException")
     void testCreateFromDtoQuantityNull() {
@@ -225,6 +316,7 @@ class InventoryMovementServiceTest {
         verify(productRepository, never()).findById(anyLong());
         verify(productRepository, never()).save(any(Product.class));
         verify(movementRepository, never()).save(any(InventoryMovement.class));
+        verifyNoMoreInteractions(productRepository, movementRepository);
     }
 
     @Test
@@ -245,6 +337,7 @@ class InventoryMovementServiceTest {
         verify(productRepository, never()).findById(anyLong());
         verify(productRepository, never()).save(any(Product.class));
         verify(movementRepository, never()).save(any(InventoryMovement.class));
+        verifyNoMoreInteractions(productRepository, movementRepository);
     }
 
     @Test
@@ -265,6 +358,7 @@ class InventoryMovementServiceTest {
         verify(productRepository, never()).findById(anyLong());
         verify(productRepository, never()).save(any(Product.class));
         verify(movementRepository, never()).save(any(InventoryMovement.class));
+        verifyNoMoreInteractions(productRepository, movementRepository);
     }
 
     @Test
@@ -287,6 +381,7 @@ class InventoryMovementServiceTest {
         verify(productRepository, times(1)).findById(999L);
         verify(productRepository, never()).save(any(Product.class));
         verify(movementRepository, never()).save(any(InventoryMovement.class));
+        verifyNoMoreInteractions(productRepository, movementRepository);
     }
 
     @Test
@@ -310,6 +405,7 @@ class InventoryMovementServiceTest {
         verify(productRepository, times(1)).findById(3L);
         verify(productRepository, never()).save(any(Product.class));
         verify(movementRepository, never()).save(any(InventoryMovement.class));
+        verifyNoMoreInteractions(productRepository, movementRepository);
     }
 
     @Test
@@ -338,6 +434,7 @@ class InventoryMovementServiceTest {
         verify(productRepository, times(1)).findById(3L);
         verify(productRepository, never()).save(any(Product.class));
         verify(movementRepository, never()).save(any(InventoryMovement.class));
+        verifyNoMoreInteractions(productRepository, movementRepository);
     }
 
     @Test
@@ -366,6 +463,7 @@ class InventoryMovementServiceTest {
         verify(productRepository, times(1)).findById(3L);
         verify(productRepository, never()).save(any(Product.class));
         verify(movementRepository, never()).save(any(InventoryMovement.class));
+        verifyNoMoreInteractions(productRepository, movementRepository);
     }
 
     @Test
