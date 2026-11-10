@@ -1,5 +1,6 @@
 package gm.inventoryproject.dto.category;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -11,9 +12,11 @@ import static org.junit.jupiter.api.Assertions.*;
  * utilizando JUnit 5 puro sin dependencias externas.
  * </p>
  */
+@DisplayName("Tests de CategoryResponseDto con JUnit puro")
 class CategoryResponseDtoTest {
 
     @Test
+    @DisplayName("Constructor con todos los parámetros inicializa correctamente los campos")
     void testConstructorWithAllParameters() {
         // Arrange
         Long expectedId = 1L;
@@ -31,6 +34,7 @@ class CategoryResponseDtoTest {
     }
 
     @Test
+    @DisplayName("Setters y getters actualizan y retornan los valores correctamente")
     void testSettersAndGetters() {
         // Arrange
         CategoryResponseDto dto = new CategoryResponseDto(null, null, null);
@@ -50,6 +54,7 @@ class CategoryResponseDtoTest {
     }
 
     @Test
+    @DisplayName("Constructor acepta valores null sin lanzar excepción")
     void testConstructorWithNullValues() {
         // Act
         CategoryResponseDto dto = new CategoryResponseDto(null, null, null);
@@ -62,6 +67,7 @@ class CategoryResponseDtoTest {
     }
 
     @Test
+    @DisplayName("Constructor acepta strings vacíos")
     void testConstructorWithEmptyStrings() {
         // Arrange
         String emptyName = "";

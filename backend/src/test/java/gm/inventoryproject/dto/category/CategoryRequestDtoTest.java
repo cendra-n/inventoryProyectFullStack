@@ -4,6 +4,7 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
@@ -16,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Verifica las validaciones de Bean Validation utilizando el Validator real.
  * </p>
  */
+@DisplayName("Tests de validación de CategoryRequestDto")
 class CategoryRequestDtoTest {
 
     private Validator validator;
@@ -26,6 +28,7 @@ class CategoryRequestDtoTest {
     }
 
     @Test
+    @DisplayName("DTO válido no tiene violaciones de validación")
     void testValidDto() {
         // Arrange
         CategoryRequestDto dto = new CategoryRequestDto();
@@ -40,6 +43,7 @@ class CategoryRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Nombre nulo genera violación de @NotBlank")
     void testNameNull() {
         // Arrange
         CategoryRequestDto dto = new CategoryRequestDto();
@@ -57,6 +61,7 @@ class CategoryRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Nombre vacío genera violación de @NotBlank")
     void testNameEmpty() {
         // Arrange
         CategoryRequestDto dto = new CategoryRequestDto();
@@ -74,6 +79,7 @@ class CategoryRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Nombre con solo espacios genera violación de @NotBlank")
     void testNameOnlySpaces() {
         // Arrange
         CategoryRequestDto dto = new CategoryRequestDto();
@@ -91,6 +97,7 @@ class CategoryRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Nombre con menos de 2 caracteres genera violación de @Size")
     void testNameTooShort() {
         // Arrange
         CategoryRequestDto dto = new CategoryRequestDto();
@@ -108,6 +115,7 @@ class CategoryRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Nombre con 2 caracteres es válido")
     void testNameMinLengthValid() {
         // Arrange
         CategoryRequestDto dto = new CategoryRequestDto();
@@ -122,6 +130,7 @@ class CategoryRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Nombre con 40 caracteres es válido")
     void testNameMaxLengthValid() {
         // Arrange
         CategoryRequestDto dto = new CategoryRequestDto();
@@ -136,6 +145,7 @@ class CategoryRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Nombre con más de 40 caracteres genera violación de @Size")
     void testNameTooLong() {
         // Arrange
         CategoryRequestDto dto = new CategoryRequestDto();
@@ -153,6 +163,7 @@ class CategoryRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Nombre con números genera violación de @Pattern")
     void testNameWithNumbers() {
         // Arrange
         CategoryRequestDto dto = new CategoryRequestDto();
@@ -170,6 +181,7 @@ class CategoryRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Nombre con caracteres especiales genera violación de @Pattern")
     void testNameWithSpecialCharacters() {
         // Arrange
         CategoryRequestDto dto = new CategoryRequestDto();
@@ -187,6 +199,7 @@ class CategoryRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Descripción nula genera violación de @NotBlank")
     void testDescriptionNull() {
         // Arrange
         CategoryRequestDto dto = new CategoryRequestDto();
@@ -204,6 +217,7 @@ class CategoryRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Descripción vacía genera violación de @NotBlank")
     void testDescriptionEmpty() {
         // Arrange
         CategoryRequestDto dto = new CategoryRequestDto();
@@ -221,6 +235,7 @@ class CategoryRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Descripción con solo espacios genera violación de @NotBlank")
     void testDescriptionOnlySpaces() {
         // Arrange
         CategoryRequestDto dto = new CategoryRequestDto();
@@ -238,6 +253,7 @@ class CategoryRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Descripción con 200 caracteres es válida")
     void testDescriptionMaxLengthValid() {
         // Arrange
         CategoryRequestDto dto = new CategoryRequestDto();
@@ -252,6 +268,7 @@ class CategoryRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Descripción con más de 200 caracteres genera violación de @Size")
     void testDescriptionTooLong() {
         // Arrange
         CategoryRequestDto dto = new CategoryRequestDto();
@@ -269,6 +286,7 @@ class CategoryRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Descripción con caracteres especiales inválidos genera violación de @Pattern")
     void testDescriptionWithInvalidSpecialCharacters() {
         // Arrange
         CategoryRequestDto dto = new CategoryRequestDto();
@@ -286,6 +304,7 @@ class CategoryRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Descripción con caracteres especiales válidos (.,;-) es aceptada")
     void testDescriptionWithValidSpecialCharacters() {
         // Arrange
         CategoryRequestDto dto = new CategoryRequestDto();
@@ -300,6 +319,7 @@ class CategoryRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Múltiples violaciones se detectan simultáneamente")
     void testMultipleViolations() {
         // Arrange
         CategoryRequestDto dto = new CategoryRequestDto();

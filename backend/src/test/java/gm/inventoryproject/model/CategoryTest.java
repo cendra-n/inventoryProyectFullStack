@@ -1,5 +1,6 @@
 package gm.inventoryproject.model;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -11,9 +12,11 @@ import static org.junit.jupiter.api.Assertions.*;
  * getters/setters y valores por defecto utilizando JUnit 5 puro.
  * </p>
  */
+@DisplayName("Tests de Category model con JUnit puro")
 class CategoryTest {
 
     @Test
+    @DisplayName("Builder crea instancia con todos los campos correctamente")
     void testBuilder() {
         // Arrange
         Long expectedId = 1L;
@@ -36,6 +39,7 @@ class CategoryTest {
     }
 
     @Test
+    @DisplayName("Constructor sin argumentos crea instancia con campos null")
     void testNoArgsConstructor() {
         // Act
         Category category = new Category();
@@ -48,6 +52,7 @@ class CategoryTest {
     }
 
     @Test
+    @DisplayName("Constructor con todos los argumentos inicializa correctamente los campos")
     void testAllArgsConstructor() {
         // Arrange
         Long expectedId = 2L;
@@ -66,6 +71,7 @@ class CategoryTest {
     }
 
     @Test
+    @DisplayName("Setters y getters actualizan y retornan los valores correctamente")
     void testSettersAndGetters() {
         // Arrange
         Category category = new Category();
@@ -84,6 +90,7 @@ class CategoryTest {
     }
 
     @Test
+    @DisplayName("Builder sin ID crea instancia con ID null")
     void testBuilderWithoutId() {
         // Arrange
         String expectedName = "Hogar";

@@ -8,6 +8,7 @@ import gm.inventoryproject.exceptions.DuplicateFieldException;
 import gm.inventoryproject.exceptions.ResourceNotFoundException;
 import gm.inventoryproject.model.Category;
 import gm.inventoryproject.service.ICategoryService;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -33,6 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Verifica los endpoints HTTP utilizando @WebMvcTest y MockMvc.
  * </p>
  */
+@DisplayName("Tests de CategoryController con @WebMvcTest")
 @WebMvcTest(CategoryController.class)
 class CategoryControllerTest {
 
@@ -49,6 +51,7 @@ class CategoryControllerTest {
     // CREATE
     // ------------------------------------------------------
     @Test
+    @DisplayName("Crear categoría válida retorna 201 Created con categoría creada")
     void testCreateSuccess() throws Exception {
         // Arrange
         CategoryRequestDto requestDto = new CategoryRequestDto();
@@ -74,6 +77,7 @@ class CategoryControllerTest {
     }
 
     @Test
+    @DisplayName("Crear categoría con datos inválidos retorna 400 Bad Request con errores")
     void testCreateValidationError() throws Exception {
         // Arrange
         CategoryRequestDto requestDto = new CategoryRequestDto();
@@ -92,6 +96,7 @@ class CategoryControllerTest {
     }
 
     @Test
+    @DisplayName("Crear categoría con nombre duplicado retorna 400 Bad Request con error de duplicado")
     void testCreateDuplicateName() throws Exception {
         // Arrange
         CategoryRequestDto requestDto = new CategoryRequestDto();
@@ -116,6 +121,7 @@ class CategoryControllerTest {
     // GET ALL
     // ------------------------------------------------------
     @Test
+    @DisplayName("Obtener todas las categorías retorna 200 OK con lista de categorías")
     void testFindAll() throws Exception {
         // Arrange
         Category cat1 = Category.builder().id(1L).name("Electrónica").build();
@@ -137,6 +143,7 @@ class CategoryControllerTest {
     // GET BY ID
     // ------------------------------------------------------
     @Test
+    @DisplayName("Obtener categoría por ID existente retorna 200 OK con categoría")
     void testFindByIdSuccess() throws Exception {
         // Arrange
         Category category = Category.builder()
@@ -156,6 +163,7 @@ class CategoryControllerTest {
     }
 
     @Test
+    @DisplayName("Obtener categoría por ID inexistente retorna 404 Not Found")
     void testFindByIdNotFound() throws Exception {
         // Arrange
         when(categoryService.getById(999L))
@@ -174,6 +182,7 @@ class CategoryControllerTest {
     // SEARCH BY NAME
     // ------------------------------------------------------
     @Test
+    @DisplayName("Buscar categorías por nombre retorna 200 OK con coincidencias")
     void testSearchByName() throws Exception {
         // Arrange
         Category cat1 = Category.builder().id(1L).name("Electrónica").build();
@@ -194,6 +203,7 @@ class CategoryControllerTest {
     // UPDATE
     // ------------------------------------------------------
     @Test
+    @DisplayName("Actualizar categoría válida retorna 200 OK con categoría actualizada")
     void testUpdateSuccess() throws Exception {
         // Arrange
         CategoryRequestDto requestDto = new CategoryRequestDto();
@@ -219,6 +229,7 @@ class CategoryControllerTest {
     }
 
     @Test
+    @DisplayName("Actualizar categoría con datos inválidos retorna 400 Bad Request con errores")
     void testUpdateValidationError() throws Exception {
         // Arrange
         CategoryRequestDto requestDto = new CategoryRequestDto();
@@ -237,6 +248,7 @@ class CategoryControllerTest {
     }
 
     @Test
+    @DisplayName("Actualizar categoría inexistente retorna 404 Not Found")
     void testUpdateNotFound() throws Exception {
         // Arrange
         CategoryRequestDto requestDto = new CategoryRequestDto();
@@ -258,6 +270,7 @@ class CategoryControllerTest {
     }
 
     @Test
+    @DisplayName("Actualizar categoría con nombre duplicado retorna 400 Bad Request con error de duplicado")
     void testUpdateDuplicateName() throws Exception {
         // Arrange
         CategoryRequestDto requestDto = new CategoryRequestDto();
@@ -282,6 +295,7 @@ class CategoryControllerTest {
     // DELETE
     // ------------------------------------------------------
     @Test
+    @DisplayName("Eliminar categoría existente retorna 204 No Content")
     void testDeleteSuccess() throws Exception {
         // Arrange
         doNothing().when(categoryService).delete(anyLong());
@@ -292,6 +306,7 @@ class CategoryControllerTest {
     }
 
     @Test
+    @DisplayName("Eliminar categoría inexistente retorna 404 Not Found")
     void testDeleteNotFound() throws Exception {
         // Arrange
         doThrow(new ResourceNotFoundException("Categoría no encontrada con id: 999"))
@@ -306,7 +321,14 @@ class CategoryControllerTest {
                 .andExpect(jsonPath("$.message").value("Categoría no encontrada con id: 999"));
     }
 
+    /**
+     * Verifica que al intentar eliminar una categoría con productos asociados,
+     * el controller retorna 409 Conflict con el mensaje de error plano (sin JSON),
+     * siguiendo el comportamiento específico del GlobalExceptionHandler para
+     * CategoryHasProductsException.
+     */
     @Test
+    @DisplayName("Eliminar categoría con productos retorna 409 Conflict con mensaje plano")
     void testDeleteHasProducts() throws Exception {
         // Arrange
         doThrow(new CategoryHasProductsException(

@@ -6,6 +6,7 @@ import gm.inventoryproject.exceptions.ResourceNotFoundException;
 import gm.inventoryproject.model.Category;
 import gm.inventoryproject.repository.CategoryRepository;
 import gm.inventoryproject.repository.ProductRepository;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -28,6 +29,7 @@ import static org.mockito.Mockito.*;
  * Verifica la lógica de negocio utilizando Mockito para los repositorios.
  * </p>
  */
+@DisplayName("Tests de CategoryService con Mockito")
 @ExtendWith(MockitoExtension.class)
 class CategoryServiceTest {
 
@@ -44,6 +46,7 @@ class CategoryServiceTest {
     // GET ALL
     // ---------------------------------------------------------
     @Test
+    @DisplayName("Obtener todas las categorías retorna lista completa")
     void testGetAll() {
         // Arrange
         Category cat1 = Category.builder().id(1L).name("Electrónica").build();
@@ -65,6 +68,7 @@ class CategoryServiceTest {
     // GET BY ID
     // ---------------------------------------------------------
     @Test
+    @DisplayName("Obtener categoría por ID existente retorna la categoría")
     void testGetByIdSuccess() {
         // Arrange
         Long id = 1L;
@@ -82,6 +86,7 @@ class CategoryServiceTest {
     }
 
     @Test
+    @DisplayName("Obtener categoría por ID inexistente lanza ResourceNotFoundException")
     void testGetByIdNotFound() {
         // Arrange
         Long id = 999L;
@@ -100,6 +105,7 @@ class CategoryServiceTest {
     // SEARCH BY NAME
     // ---------------------------------------------------------
     @Test
+    @DisplayName("Buscar categorías por nombre retorna coincidencias parciales")
     void testSearchByName() {
         // Arrange
         String searchTerm = "lec";
@@ -120,6 +126,7 @@ class CategoryServiceTest {
     // CREATE
     // ---------------------------------------------------------
     @Test
+    @DisplayName("Crear categoría con nombre único retorna categoría guardada")
     void testCreateSuccess() {
         // Arrange
         Category toCreate = Category.builder()
@@ -146,6 +153,7 @@ class CategoryServiceTest {
     }
 
     @Test
+    @DisplayName("Crear categoría con nombre duplicado lanza DuplicateFieldException")
     void testCreateDuplicateName() {
         // Arrange
         Category toCreate = Category.builder()
@@ -168,6 +176,7 @@ class CategoryServiceTest {
     // UPDATE
     // ---------------------------------------------------------
     @Test
+    @DisplayName("Actualizar categoría con nombre diferente y único retorna categoría actualizada")
     void testUpdateSuccess() {
         // Arrange
         Long id = 1L;
@@ -203,6 +212,7 @@ class CategoryServiceTest {
     }
 
     @Test
+    @DisplayName("Actualizar categoría con el mismo nombre no verifica duplicados")
     void testUpdateSameName() {
         // Arrange
         Long id = 1L;
@@ -236,7 +246,13 @@ class CategoryServiceTest {
         verify(categoryRepository, times(1)).save(any(Category.class));
     }
 
+    /**
+     * Verifica que al actualizar una categoría con el mismo nombre pero diferente case
+     * (ej: "electrónica" -> "ELECTRÓNICA"), no se llama a existsByName porque se considera
+     * el mismo nombre. Este comportamiento permite cambiar el case sin error de duplicado.
+     */
     @Test
+    @DisplayName("Actualizar categoría con mismo nombre diferente case no verifica duplicados")
     void testUpdateSameNameDifferentCase() {
         // Arrange
         Long id = 1L;
@@ -271,6 +287,7 @@ class CategoryServiceTest {
     }
 
     @Test
+    @DisplayName("Actualizar categoría inexistente lanza ResourceNotFoundException")
     void testUpdateNotFound() {
         // Arrange
         Long id = 999L;
@@ -292,6 +309,7 @@ class CategoryServiceTest {
     }
 
     @Test
+    @DisplayName("Actualizar categoría con nombre duplicado lanza DuplicateFieldException")
     void testUpdateDuplicateName() {
         // Arrange
         Long id = 1L;
@@ -322,6 +340,7 @@ class CategoryServiceTest {
     // DELETE
     // ---------------------------------------------------------
     @Test
+    @DisplayName("Eliminar categoría existente sin productos elimina la categoría")
     void testDeleteSuccess() {
         // Arrange
         Long id = 1L;
@@ -339,6 +358,7 @@ class CategoryServiceTest {
     }
 
     @Test
+    @DisplayName("Eliminar categoría inexistente lanza ResourceNotFoundException")
     void testDeleteNotFound() {
         // Arrange
         Long id = 999L;
@@ -356,6 +376,7 @@ class CategoryServiceTest {
     }
 
     @Test
+    @DisplayName("Eliminar categoría con productos asociados lanza CategoryHasProductsException")
     void testDeleteHasProducts() {
         // Arrange
         Long id = 1L;
