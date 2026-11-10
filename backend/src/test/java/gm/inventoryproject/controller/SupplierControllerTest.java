@@ -8,6 +8,7 @@ import gm.inventoryproject.exceptions.ResourceNotFoundException;
 import gm.inventoryproject.exceptions.SupplierHasProductsException;
 import gm.inventoryproject.model.Supplier;
 import gm.inventoryproject.service.ISupplierService;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -33,6 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Verifica los endpoints HTTP utilizando @WebMvcTest y MockMvc.
  * </p>
  */
+@DisplayName("Tests de SupplierController con @WebMvcTest")
 @WebMvcTest(SupplierController.class)
 class SupplierControllerTest {
 
@@ -49,6 +51,7 @@ class SupplierControllerTest {
     // CREATE
     // ------------------------------------------------------
     @Test
+    @DisplayName("Crear proveedor válido retorna 201 Created con proveedor creado")
     void testCreateSuccess() throws Exception {
         // Arrange
         SupplierRequestDto requestDto = new SupplierRequestDto();
@@ -77,6 +80,7 @@ class SupplierControllerTest {
     }
 
     @Test
+    @DisplayName("Crear proveedor con datos inválidos retorna 400 Bad Request con errores")
     void testCreateValidationError() throws Exception {
         // Arrange
         SupplierRequestDto requestDto = new SupplierRequestDto();
@@ -96,6 +100,7 @@ class SupplierControllerTest {
     }
 
     @Test
+    @DisplayName("Crear proveedor con email duplicado retorna 400 Bad Request con error de duplicado")
     void testCreateDuplicateEmail() throws Exception {
         // Arrange
         SupplierRequestDto requestDto = new SupplierRequestDto();
@@ -121,6 +126,7 @@ class SupplierControllerTest {
     // GET ALL
     // ------------------------------------------------------
     @Test
+    @DisplayName("Obtener todos los proveedores retorna 200 OK con lista de proveedores")
     void testFindAll() throws Exception {
         // Arrange
         Supplier sup1 = Supplier.builder().id(1L).name("Simeflat SA").build();
@@ -142,6 +148,7 @@ class SupplierControllerTest {
     // GET BY ID
     // ------------------------------------------------------
     @Test
+    @DisplayName("Obtener proveedor por ID existente retorna 200 OK con proveedor")
     void testFindByIdSuccess() throws Exception {
         // Arrange
         Supplier supplier = Supplier.builder()
@@ -163,6 +170,7 @@ class SupplierControllerTest {
     }
 
     @Test
+    @DisplayName("Obtener proveedor por ID inexistente retorna 404 Not Found")
     void testFindByIdNotFound() throws Exception {
         // Arrange
         when(supplierService.getById(999L))
@@ -181,6 +189,7 @@ class SupplierControllerTest {
     // SEARCH BY NAME
     // ------------------------------------------------------
     @Test
+    @DisplayName("Buscar proveedores por nombre retorna 200 OK con coincidencias")
     void testSearchByName() throws Exception {
         // Arrange
         Supplier sup1 = Supplier.builder().id(1L).name("Simeflat SA").build();
@@ -201,6 +210,7 @@ class SupplierControllerTest {
     // UPDATE
     // ------------------------------------------------------
     @Test
+    @DisplayName("Actualizar proveedor válido retorna 200 OK con proveedor actualizado")
     void testUpdateSuccess() throws Exception {
         // Arrange
         SupplierRequestDto requestDto = new SupplierRequestDto();
@@ -229,6 +239,7 @@ class SupplierControllerTest {
     }
 
     @Test
+    @DisplayName("Actualizar proveedor con datos inválidos retorna 400 Bad Request con errores")
     void testUpdateValidationError() throws Exception {
         // Arrange
         SupplierRequestDto requestDto = new SupplierRequestDto();
@@ -248,6 +259,7 @@ class SupplierControllerTest {
     }
 
     @Test
+    @DisplayName("Actualizar proveedor inexistente retorna 404 Not Found")
     void testUpdateNotFound() throws Exception {
         // Arrange
         SupplierRequestDto requestDto = new SupplierRequestDto();
@@ -270,6 +282,7 @@ class SupplierControllerTest {
     }
 
     @Test
+    @DisplayName("Actualizar proveedor con email duplicado retorna 400 Bad Request con error de duplicado")
     void testUpdateDuplicateEmail() throws Exception {
         // Arrange
         SupplierRequestDto requestDto = new SupplierRequestDto();
@@ -295,6 +308,7 @@ class SupplierControllerTest {
     // DELETE
     // ------------------------------------------------------
     @Test
+    @DisplayName("Eliminar proveedor existente retorna 204 No Content")
     void testDeleteSuccess() throws Exception {
         // Arrange
         doNothing().when(supplierService).delete(anyLong());
@@ -305,6 +319,7 @@ class SupplierControllerTest {
     }
 
     @Test
+    @DisplayName("Eliminar proveedor inexistente retorna 404 Not Found")
     void testDeleteNotFound() throws Exception {
         // Arrange
         doThrow(new ResourceNotFoundException("Proveedor no encontrado con id: 999"))
@@ -319,7 +334,14 @@ class SupplierControllerTest {
                 .andExpect(jsonPath("$.message").value("Proveedor no encontrado con id: 999"));
     }
 
+    /**
+     * Verifica que al intentar eliminar un proveedor con productos asociados,
+     * el controller retorna 409 Conflict con el mensaje de error plano (sin JSON),
+     * siguiendo el comportamiento específico del GlobalExceptionHandler para
+     * SupplierHasProductsException.
+     */
     @Test
+    @DisplayName("Eliminar proveedor con productos retorna 409 Conflict con mensaje plano")
     void testDeleteHasProducts() throws Exception {
         // Arrange
         doThrow(new SupplierHasProductsException(

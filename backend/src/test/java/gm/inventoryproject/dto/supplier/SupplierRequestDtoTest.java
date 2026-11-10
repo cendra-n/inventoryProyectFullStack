@@ -4,6 +4,7 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
@@ -16,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Verifica las validaciones de Bean Validation utilizando el Validator real.
  * </p>
  */
+@DisplayName("Tests de validación de SupplierRequestDto")
 class SupplierRequestDtoTest {
 
     private Validator validator;
@@ -26,6 +28,7 @@ class SupplierRequestDtoTest {
     }
 
     @Test
+    @DisplayName("DTO válido no tiene violaciones de validación")
     void testValidDto() {
         // Arrange
         SupplierRequestDto dto = new SupplierRequestDto();
@@ -41,6 +44,7 @@ class SupplierRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Nombre nulo genera violación de @NotBlank")
     void testNameNull() {
         // Arrange
         SupplierRequestDto dto = new SupplierRequestDto();
@@ -59,6 +63,7 @@ class SupplierRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Nombre vacío genera violación de @NotBlank")
     void testNameEmpty() {
         // Arrange
         SupplierRequestDto dto = new SupplierRequestDto();
@@ -77,6 +82,7 @@ class SupplierRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Nombre con solo espacios genera violación de @NotBlank")
     void testNameOnlySpaces() {
         // Arrange
         SupplierRequestDto dto = new SupplierRequestDto();
@@ -95,6 +101,7 @@ class SupplierRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Nombre con menos de 2 caracteres genera violación de @Size")
     void testNameTooShort() {
         // Arrange
         SupplierRequestDto dto = new SupplierRequestDto();
@@ -113,6 +120,7 @@ class SupplierRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Nombre con 2 caracteres es válido")
     void testNameMinLengthValid() {
         // Arrange
         SupplierRequestDto dto = new SupplierRequestDto();
@@ -128,6 +136,7 @@ class SupplierRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Nombre con 30 caracteres es válido")
     void testNameMaxLengthValid() {
         // Arrange
         SupplierRequestDto dto = new SupplierRequestDto();
@@ -143,6 +152,7 @@ class SupplierRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Nombre con más de 30 caracteres genera violación de @Size")
     void testNameTooLong() {
         // Arrange
         SupplierRequestDto dto = new SupplierRequestDto();
@@ -161,6 +171,7 @@ class SupplierRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Nombre con números genera violación de @Pattern")
     void testNameWithNumbers() {
         // Arrange
         SupplierRequestDto dto = new SupplierRequestDto();
@@ -179,6 +190,7 @@ class SupplierRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Nombre con caracteres especiales genera violación de @Pattern")
     void testNameWithSpecialCharacters() {
         // Arrange
         SupplierRequestDto dto = new SupplierRequestDto();
@@ -197,6 +209,7 @@ class SupplierRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Nombre con acentos es válido")
     void testNameWithAccentsValid() {
         // Arrange
         SupplierRequestDto dto = new SupplierRequestDto();
@@ -212,6 +225,7 @@ class SupplierRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Email nulo genera violación de @NotBlank")
     void testEmailNull() {
         // Arrange
         SupplierRequestDto dto = new SupplierRequestDto();
@@ -230,6 +244,7 @@ class SupplierRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Email vacío genera violación de @NotBlank")
     void testEmailEmpty() {
         // Arrange
         SupplierRequestDto dto = new SupplierRequestDto();
@@ -248,6 +263,7 @@ class SupplierRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Email con formato inválido genera violación de @Pattern")
     void testEmailInvalidFormat() {
         // Arrange
         SupplierRequestDto dto = new SupplierRequestDto();
@@ -266,6 +282,7 @@ class SupplierRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Email sin @ genera violación de @Pattern")
     void testEmailWithoutAt() {
         // Arrange
         SupplierRequestDto dto = new SupplierRequestDto();
@@ -284,6 +301,7 @@ class SupplierRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Email válido es aceptado")
     void testEmailValidFormat() {
         // Arrange
         SupplierRequestDto dto = new SupplierRequestDto();
@@ -299,6 +317,7 @@ class SupplierRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Teléfono nulo genera violación de @NotBlank")
     void testPhoneNull() {
         // Arrange
         SupplierRequestDto dto = new SupplierRequestDto();
@@ -317,6 +336,7 @@ class SupplierRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Teléfono vacío genera violación de @NotBlank")
     void testPhoneEmpty() {
         // Arrange
         SupplierRequestDto dto = new SupplierRequestDto();
@@ -335,6 +355,7 @@ class SupplierRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Teléfono con letras genera violación de @Pattern")
     void testPhoneWithLetters() {
         // Arrange
         SupplierRequestDto dto = new SupplierRequestDto();
@@ -353,6 +374,7 @@ class SupplierRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Teléfono con caracteres especiales genera violación de @Pattern")
     void testPhoneWithSpecialCharacters() {
         // Arrange
         SupplierRequestDto dto = new SupplierRequestDto();
@@ -371,6 +393,7 @@ class SupplierRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Teléfono con menos de 8 dígitos genera violación de @Pattern")
     void testPhoneTooShort() {
         // Arrange
         SupplierRequestDto dto = new SupplierRequestDto();
@@ -389,6 +412,7 @@ class SupplierRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Teléfono con 8 dígitos es válido")
     void testPhoneMinLengthValid() {
         // Arrange
         SupplierRequestDto dto = new SupplierRequestDto();
@@ -404,6 +428,7 @@ class SupplierRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Teléfono con 15 dígitos es válido")
     void testPhoneMaxLengthValid() {
         // Arrange
         SupplierRequestDto dto = new SupplierRequestDto();
@@ -419,6 +444,7 @@ class SupplierRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Teléfono con más de 15 dígitos genera violación de @Pattern")
     void testPhoneTooLong() {
         // Arrange
         SupplierRequestDto dto = new SupplierRequestDto();
@@ -437,6 +463,7 @@ class SupplierRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Múltiples violaciones se detectan simultáneamente")
     void testMultipleViolations() {
         // Arrange
         SupplierRequestDto dto = new SupplierRequestDto();
@@ -464,7 +491,12 @@ class SupplierRequestDtoTest {
         assertTrue(phoneViolationFound, "Debería haber violación de formato en teléfono");
     }
 
+    /**
+     * Verifica que los números de teléfono pueden comenzar con cero,
+     * lo cual es válido para códigos de área internacionales o locales.
+     */
     @Test
+    @DisplayName("Teléfono con cero al inicio es válido")
     void testPhoneWithLeadingZero() {
         // Arrange
         SupplierRequestDto dto = new SupplierRequestDto();
@@ -479,7 +511,12 @@ class SupplierRequestDtoTest {
         assertTrue(violations.isEmpty(), "Teléfono con cero al inicio debería ser aceptado");
     }
 
+    /**
+     * Verifica que los emails pueden contener el símbolo + y puntos,
+     * lo cual es válido según el estándar RFC 5322 para emails.
+     */
     @Test
+    @DisplayName("Email con + y . es válido")
     void testEmailWithPlusAndDot() {
         // Arrange
         SupplierRequestDto dto = new SupplierRequestDto();

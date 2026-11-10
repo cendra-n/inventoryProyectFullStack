@@ -1,5 +1,6 @@
 package gm.inventoryproject.dto.supplier;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -11,9 +12,11 @@ import static org.junit.jupiter.api.Assertions.*;
  * utilizando JUnit 5 puro sin dependencias externas.
  * </p>
  */
+@DisplayName("Tests de SupplierResponseDto con JUnit puro")
 class SupplierResponseDtoTest {
 
     @Test
+    @DisplayName("Constructor con todos los parámetros inicializa correctamente los campos")
     void testConstructorWithAllParameters() {
         // Arrange
         Long expectedId = 1L;
@@ -33,6 +36,7 @@ class SupplierResponseDtoTest {
     }
 
     @Test
+    @DisplayName("Setters y getters actualizan y retornan los valores correctamente")
     void testSettersAndGetters() {
         // Arrange
         SupplierResponseDto dto = new SupplierResponseDto(null, null, null, null);
@@ -55,6 +59,7 @@ class SupplierResponseDtoTest {
     }
 
     @Test
+    @DisplayName("Constructor acepta valores null sin lanzar excepción")
     void testConstructorWithNullValues() {
         // Act
         SupplierResponseDto dto = new SupplierResponseDto(null, null, null, null);
@@ -68,6 +73,7 @@ class SupplierResponseDtoTest {
     }
 
     @Test
+    @DisplayName("Constructor acepta strings vacíos")
     void testConstructorWithEmptyStrings() {
         // Arrange
         String emptyName = "";

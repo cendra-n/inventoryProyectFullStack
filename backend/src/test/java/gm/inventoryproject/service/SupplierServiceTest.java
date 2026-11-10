@@ -7,6 +7,7 @@ import gm.inventoryproject.exceptions.SupplierHasProductsException;
 import gm.inventoryproject.model.Supplier;
 import gm.inventoryproject.repository.ProductRepository;
 import gm.inventoryproject.repository.SupplierRepository;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -29,6 +30,7 @@ import static org.mockito.Mockito.*;
  * Verifica la lógica de negocio utilizando Mockito para los repositorios.
  * </p>
  */
+@DisplayName("Tests de SupplierService con Mockito")
 @ExtendWith(MockitoExtension.class)
 class SupplierServiceTest {
 
@@ -45,6 +47,7 @@ class SupplierServiceTest {
     // GET ALL
     // ---------------------------------------------------------
     @Test
+    @DisplayName("Obtener todos los proveedores retorna lista completa")
     void testGetAll() {
         // Arrange
         Supplier sup1 = Supplier.builder().id(1L).name("Simeflat SA").build();
@@ -66,6 +69,7 @@ class SupplierServiceTest {
     // GET BY ID
     // ---------------------------------------------------------
     @Test
+    @DisplayName("Obtener proveedor por ID existente retorna el proveedor")
     void testGetByIdSuccess() {
         // Arrange
         Long id = 1L;
@@ -88,6 +92,7 @@ class SupplierServiceTest {
     }
 
     @Test
+    @DisplayName("Obtener proveedor por ID inexistente lanza ResourceNotFoundException")
     void testGetByIdNotFound() {
         // Arrange
         Long id = 999L;
@@ -106,6 +111,7 @@ class SupplierServiceTest {
     // SEARCH BY NAME
     // ---------------------------------------------------------
     @Test
+    @DisplayName("Buscar proveedores por nombre retorna coincidencias parciales")
     void testSearchByName() {
         // Arrange
         String searchTerm = "sime";
@@ -126,6 +132,7 @@ class SupplierServiceTest {
     // CREATE
     // ---------------------------------------------------------
     @Test
+    @DisplayName("Crear proveedor con email y teléfono únicos retorna proveedor guardado")
     void testCreateSuccess() {
         // Arrange
         SupplierRequestDto dto = new SupplierRequestDto();
@@ -166,6 +173,7 @@ class SupplierServiceTest {
     }
 
     @Test
+    @DisplayName("Crear proveedor con email duplicado lanza DuplicateFieldException")
     void testCreateDuplicateEmail() {
         // Arrange
         SupplierRequestDto dto = new SupplierRequestDto();
@@ -187,6 +195,7 @@ class SupplierServiceTest {
     }
 
     @Test
+    @DisplayName("Crear proveedor con teléfono duplicado lanza DuplicateFieldException")
     void testCreateDuplicatePhone() {
         // Arrange
         SupplierRequestDto dto = new SupplierRequestDto();
@@ -212,6 +221,7 @@ class SupplierServiceTest {
     // UPDATE
     // ---------------------------------------------------------
     @Test
+    @DisplayName("Actualizar proveedor con email y teléfono diferentes y únicos retorna proveedor actualizado")
     void testUpdateSuccess() {
         // Arrange
         Long id = 1L;
@@ -254,6 +264,7 @@ class SupplierServiceTest {
     }
 
     @Test
+    @DisplayName("Actualizar proveedor con el mismo email no verifica duplicado de email")
     void testUpdateSameEmail() {
         // Arrange
         Long id = 1L;
@@ -294,7 +305,13 @@ class SupplierServiceTest {
         verify(supplierRepository, times(1)).save(any(Supplier.class));
     }
 
+    /**
+     * Verifica que al actualizar un proveedor con el mismo email pero diferente case
+     * (ej: "contacto@simeflat.com" -> "CONTACTO@SIMEFLAT.COM"), no se llama a existsByEmail
+     * porque se considera el mismo email. Este comportamiento permite cambiar el case sin error.
+     */
     @Test
+    @DisplayName("Actualizar proveedor con mismo email diferente case no verifica duplicado de email")
     void testUpdateSameEmailDifferentCase() {
         // Arrange
         Long id = 1L;
@@ -335,6 +352,7 @@ class SupplierServiceTest {
     }
 
     @Test
+    @DisplayName("Actualizar proveedor con el mismo teléfono no verifica duplicado de teléfono")
     void testUpdateSamePhone() {
         // Arrange
         Long id = 1L;
@@ -376,6 +394,7 @@ class SupplierServiceTest {
     }
 
     @Test
+    @DisplayName("Actualizar proveedor inexistente lanza ResourceNotFoundException")
     void testUpdateNotFound() {
         // Arrange
         Long id = 999L;
@@ -399,6 +418,7 @@ class SupplierServiceTest {
     }
 
     @Test
+    @DisplayName("Actualizar proveedor con email duplicado lanza DuplicateFieldException")
     void testUpdateDuplicateEmail() {
         // Arrange
         Long id = 1L;
@@ -430,6 +450,7 @@ class SupplierServiceTest {
     }
 
     @Test
+    @DisplayName("Actualizar proveedor con teléfono duplicado lanza DuplicateFieldException")
     void testUpdateDuplicatePhone() {
         // Arrange
         Long id = 1L;
@@ -465,6 +486,7 @@ class SupplierServiceTest {
     // DELETE
     // ---------------------------------------------------------
     @Test
+    @DisplayName("Eliminar proveedor existente sin productos elimina el proveedor")
     void testDeleteSuccess() {
         // Arrange
         Long id = 1L;
@@ -482,6 +504,7 @@ class SupplierServiceTest {
     }
 
     @Test
+    @DisplayName("Eliminar proveedor inexistente lanza ResourceNotFoundException")
     void testDeleteNotFound() {
         // Arrange
         Long id = 999L;
@@ -499,6 +522,7 @@ class SupplierServiceTest {
     }
 
     @Test
+    @DisplayName("Eliminar proveedor con productos asociados lanza SupplierHasProductsException")
     void testDeleteHasProducts() {
         // Arrange
         Long id = 1L;
