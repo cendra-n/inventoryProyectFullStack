@@ -8,6 +8,7 @@ import gm.inventoryproject.model.InventoryMovement;
 import gm.inventoryproject.model.Product;
 import gm.inventoryproject.service.IInventoryMovementService;
 import gm.inventoryproject.service.IProductService;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -31,6 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Verifica los endpoints HTTP utilizando @WebMvcTest y MockMvc.
  * </p>
  */
+@DisplayName("Tests de InventoryMovementController con @WebMvcTest")
 @WebMvcTest(InventoryMovementController.class)
 class InventoryMovementControllerTest {
 
@@ -50,6 +52,7 @@ class InventoryMovementControllerTest {
     // GET ALL
     // ------------------------------------------------------
     @Test
+    @DisplayName("Obtener todos los movimientos retorna 200 OK con lista de movimientos")
     void testGetAll() throws Exception {
         // Arrange
         Product product = Product.builder().id(3L).name("Botella de agua").build();
@@ -88,6 +91,7 @@ class InventoryMovementControllerTest {
     // GET BY ID
     // ------------------------------------------------------
     @Test
+    @DisplayName("Obtener movimiento por ID existente retorna 200 OK con movimiento")
     void testGetByIdSuccess() throws Exception {
         // Arrange
         Product product = Product.builder().id(3L).name("Botella de agua").build();
@@ -112,6 +116,7 @@ class InventoryMovementControllerTest {
     }
 
     @Test
+    @DisplayName("Obtener movimiento por ID inexistente retorna 404 Not Found")
     void testGetByIdNotFound() throws Exception {
         // Arrange
         when(movementService.getById(999L))
@@ -130,6 +135,7 @@ class InventoryMovementControllerTest {
     // CREATE
     // ------------------------------------------------------
     @Test
+    @DisplayName("Crear movimiento válido retorna 201 Created con movimiento creado")
     void testCreateSuccess() throws Exception {
         // Arrange
         InventoryMovementRequestDto requestDto = new InventoryMovementRequestDto();
@@ -166,6 +172,7 @@ class InventoryMovementControllerTest {
     }
 
     @Test
+    @DisplayName("Crear movimiento con datos inválidos retorna 400 Bad Request con errores")
     void testCreateValidationError() throws Exception {
         // Arrange
         InventoryMovementRequestDto requestDto = new InventoryMovementRequestDto();
@@ -185,6 +192,7 @@ class InventoryMovementControllerTest {
     }
 
     @Test
+    @DisplayName("Crear movimiento con producto inexistente retorna 404 Not Found")
     void testCreateProductNotFound() throws Exception {
         // Arrange
         InventoryMovementRequestDto requestDto = new InventoryMovementRequestDto();
@@ -207,6 +215,7 @@ class InventoryMovementControllerTest {
     }
 
     @Test
+    @DisplayName("Crear movimiento con stock insuficiente retorna 400 Bad Request con error")
     void testCreateInsufficientStock() throws Exception {
         // Arrange
         InventoryMovementRequestDto requestDto = new InventoryMovementRequestDto();
@@ -232,6 +241,7 @@ class InventoryMovementControllerTest {
     // GET BY PRODUCT
     // ------------------------------------------------------
     @Test
+    @DisplayName("Obtener movimientos por producto retorna 200 OK con lista de movimientos")
     void testGetByProductSuccess() throws Exception {
         // Arrange
         Product product = Product.builder().id(3L).name("Botella de agua").build();
@@ -261,6 +271,7 @@ class InventoryMovementControllerTest {
     }
 
     @Test
+    @DisplayName("Obtener movimientos por producto inexistente retorna 404 Not Found")
     void testGetByProductNotFound() throws Exception {
         // Arrange
         when(movementService.getByProduct(999L))
@@ -279,6 +290,7 @@ class InventoryMovementControllerTest {
     // GET BY DATE RANGE
     // ------------------------------------------------------
     @Test
+    @DisplayName("Obtener movimientos por rango de fechas retorna 200 OK con lista de movimientos")
     void testGetByDateRange() throws Exception {
         // Arrange
         Product product = Product.builder().id(3L).name("Botella de agua").build();
@@ -305,6 +317,7 @@ class InventoryMovementControllerTest {
     // GET BY PRODUCT AND DATE
     // ------------------------------------------------------
     @Test
+    @DisplayName("Obtener movimientos por producto y fecha retorna 200 OK con lista de movimientos")
     void testGetByProductAndDate() throws Exception {
         // Arrange
         Product product = Product.builder().id(3L).name("Botella de agua").build();

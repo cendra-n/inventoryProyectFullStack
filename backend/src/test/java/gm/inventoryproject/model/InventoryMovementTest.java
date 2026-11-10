@@ -1,5 +1,6 @@
 package gm.inventoryproject.model;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -13,9 +14,11 @@ import static org.junit.jupiter.api.Assertions.*;
  * getters/setters y valores por defecto utilizando JUnit 5 puro.
  * </p>
  */
+@DisplayName("Tests de InventoryMovement model con JUnit puro")
 class InventoryMovementTest {
 
     @Test
+    @DisplayName("Builder crea instancia con todos los campos correctamente")
     void testBuilder() {
         // Arrange
         Long expectedId = 1L;
@@ -43,7 +46,13 @@ class InventoryMovementTest {
         );
     }
 
+    /**
+     * Verifica que el constructor no-args respeta el inicializador
+     * del campo date = LocalDateTime.now(), mientras que el builder
+     * sin @Builder.Default no lo respeta.
+     */
     @Test
+    @DisplayName("Constructor sin argumentos crea instancia con date inicializado")
     void testNoArgsConstructor() {
         // Act
         InventoryMovement movement = new InventoryMovement();
@@ -60,6 +69,7 @@ class InventoryMovementTest {
     }
 
     @Test
+    @DisplayName("Constructor con todos los argumentos inicializa correctamente los campos")
     void testAllArgsConstructor() {
         // Arrange
         Long expectedId = 2L;
@@ -88,6 +98,7 @@ class InventoryMovementTest {
     }
 
     @Test
+    @DisplayName("Setters y getters actualizan y retornan los valores correctamente")
     void testSettersAndGetters() {
         // Arrange
         InventoryMovement movement = new InventoryMovement();
@@ -112,6 +123,7 @@ class InventoryMovementTest {
     }
 
     @Test
+    @DisplayName("Builder sin ID crea instancia con ID null")
     void testBuilderWithoutId() {
         // Arrange
         Integer expectedQuantity = 20;
@@ -137,7 +149,13 @@ class InventoryMovementTest {
         );
     }
 
+    /**
+     * Verifica que el builder sin @Builder.Default no respeta el inicializador
+     * del campo date = LocalDateTime.now(), dejándolo como null cuando no se
+     * especifica explícitamente.
+     */
     @Test
+    @DisplayName("Builder con solo campos requeridos deja date como null")
     void testBuilderWithOnlyRequiredFields() {
         // Arrange
         Integer expectedQuantity = 10;
@@ -162,7 +180,13 @@ class InventoryMovementTest {
         );
     }
 
+    /**
+     * Verifica que el builder sin @Builder.Default no respeta el inicializador
+     * del campo (date = LocalDateTime.now()), mientras que el constructor no-args
+     * sí lo respeta.
+     */
     @Test
+    @DisplayName("Builder sin @Builder.Default no respeta inicializador de date")
     void testBuilderDateBehavior() {
         // Arrange & Act
         InventoryMovement movementWithBuilder = InventoryMovement.builder()
@@ -181,6 +205,7 @@ class InventoryMovementTest {
     }
 
     @Test
+    @DisplayName("Builder con fecha explícita respeta el valor")
     void testBuilderWithExplicitDate() {
         // Arrange & Act
         LocalDateTime explicitDate = LocalDateTime.of(2026, 11, 9, 10, 30);
@@ -196,6 +221,7 @@ class InventoryMovementTest {
     }
 
     @Test
+    @DisplayName("Enum MovementType acepta valores IN y OUT")
     void testMovementTypeEnum() {
         // Arrange & Act
         InventoryMovement movementIn = InventoryMovement.builder()
@@ -214,6 +240,7 @@ class InventoryMovementTest {
     }
 
     @Test
+    @DisplayName("Enum MovementType tiene 2 valores: IN y OUT")
     void testMovementTypeEnumValues() {
         // Assert
         assertEquals(2, InventoryMovement.MovementType.values().length);

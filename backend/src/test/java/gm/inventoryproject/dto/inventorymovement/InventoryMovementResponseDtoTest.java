@@ -1,5 +1,6 @@
 package gm.inventoryproject.dto.inventorymovement;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -13,9 +14,11 @@ import static org.junit.jupiter.api.Assertions.*;
  * utilizando JUnit 5 puro sin dependencias externas.
  * </p>
  */
+@DisplayName("Tests de InventoryMovementResponseDto con JUnit puro")
 class InventoryMovementResponseDtoTest {
 
     @Test
+    @DisplayName("Constructor con todos los parámetros inicializa correctamente los campos")
     void testConstructorWithAllParameters() {
         // Arrange
         Long expectedId = 1L;
@@ -46,6 +49,7 @@ class InventoryMovementResponseDtoTest {
     }
 
     @Test
+    @DisplayName("Setters y getters actualizan y retornan los valores correctamente")
     void testSettersAndGetters() {
         // Arrange
         InventoryMovementResponseDto dto = new InventoryMovementResponseDto(null, null, null, null, null, null);
@@ -74,6 +78,7 @@ class InventoryMovementResponseDtoTest {
     }
 
     @Test
+    @DisplayName("Constructor acepta valores null sin lanzar excepción")
     void testConstructorWithNullValues() {
         // Act
         InventoryMovementResponseDto dto = new InventoryMovementResponseDto(null, null, null, null, null, null);
@@ -89,6 +94,7 @@ class InventoryMovementResponseDtoTest {
     }
 
     @Test
+    @DisplayName("Constructor acepta strings vacíos")
     void testConstructorWithEmptyStrings() {
         // Arrange
         String emptyType = "";
@@ -112,6 +118,7 @@ class InventoryMovementResponseDtoTest {
     }
 
     @Test
+    @DisplayName("Constructor acepta cantidad cero")
     void testConstructorWithZeroQuantity() {
         // Arrange
         Integer zeroQuantity = 0;
@@ -131,6 +138,7 @@ class InventoryMovementResponseDtoTest {
     }
 
     @Test
+    @DisplayName("Constructor acepta valores IN y OUT para tipo")
     void testTypeValues() {
         // Arrange & Act
         InventoryMovementResponseDto dtoIn = new InventoryMovementResponseDto(1L, 10, "IN", LocalDateTime.now(), 3L, "Producto");

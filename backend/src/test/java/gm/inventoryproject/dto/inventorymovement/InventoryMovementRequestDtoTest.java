@@ -4,6 +4,7 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
@@ -16,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Verifica las validaciones de Bean Validation utilizando el Validator real.
  * </p>
  */
+@DisplayName("Tests de validación de InventoryMovementRequestDto")
 class InventoryMovementRequestDtoTest {
 
     private Validator validator;
@@ -26,6 +28,7 @@ class InventoryMovementRequestDtoTest {
     }
 
     @Test
+    @DisplayName("DTO válido tipo IN no tiene violaciones de validación")
     void testValidDto() {
         // Arrange
         InventoryMovementRequestDto dto = new InventoryMovementRequestDto();
@@ -41,6 +44,7 @@ class InventoryMovementRequestDtoTest {
     }
 
     @Test
+    @DisplayName("DTO válido tipo OUT no tiene violaciones de validación")
     void testValidDtoOut() {
         // Arrange
         InventoryMovementRequestDto dto = new InventoryMovementRequestDto();
@@ -59,6 +63,7 @@ class InventoryMovementRequestDtoTest {
     // QUANTITY VALIDATIONS
     // ---------------------------------------------------------
     @Test
+    @DisplayName("Cantidad nula genera violación de @NotNull")
     void testQuantityNull() {
         // Arrange
         InventoryMovementRequestDto dto = new InventoryMovementRequestDto();
@@ -77,6 +82,7 @@ class InventoryMovementRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Cantidad cero genera violación de @Min")
     void testQuantityZero() {
         // Arrange
         InventoryMovementRequestDto dto = new InventoryMovementRequestDto();
@@ -95,6 +101,7 @@ class InventoryMovementRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Cantidad negativa genera violación de @Min")
     void testQuantityNegative() {
         // Arrange
         InventoryMovementRequestDto dto = new InventoryMovementRequestDto();
@@ -113,6 +120,7 @@ class InventoryMovementRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Cantidad positiva mínima (1) es válida")
     void testQuantityPositiveValid() {
         // Arrange
         InventoryMovementRequestDto dto = new InventoryMovementRequestDto();
@@ -128,6 +136,7 @@ class InventoryMovementRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Cantidad grande es válida")
     void testQuantityLargeValid() {
         // Arrange
         InventoryMovementRequestDto dto = new InventoryMovementRequestDto();
@@ -146,6 +155,7 @@ class InventoryMovementRequestDtoTest {
     // TYPE VALIDATIONS
     // ---------------------------------------------------------
     @Test
+    @DisplayName("Tipo nulo genera violación de @NotNull")
     void testTypeNull() {
         // Arrange
         InventoryMovementRequestDto dto = new InventoryMovementRequestDto();
@@ -164,6 +174,7 @@ class InventoryMovementRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Tipo vacío genera violación de @Pattern")
     void testTypeEmpty() {
         // Arrange
         InventoryMovementRequestDto dto = new InventoryMovementRequestDto();
@@ -182,6 +193,7 @@ class InventoryMovementRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Tipo IN es válido")
     void testTypeInValid() {
         // Arrange
         InventoryMovementRequestDto dto = new InventoryMovementRequestDto();
@@ -197,6 +209,7 @@ class InventoryMovementRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Tipo OUT es válido")
     void testTypeOutValid() {
         // Arrange
         InventoryMovementRequestDto dto = new InventoryMovementRequestDto();
@@ -212,6 +225,7 @@ class InventoryMovementRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Tipo en minúsculas genera violación de @Pattern (case-sensitive)")
     void testTypeLowerCaseInvalid() {
         // Arrange
         InventoryMovementRequestDto dto = new InventoryMovementRequestDto();
@@ -230,6 +244,7 @@ class InventoryMovementRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Tipo con case mixto genera violación de @Pattern (case-sensitive)")
     void testTypeMixedCaseInvalid() {
         // Arrange
         InventoryMovementRequestDto dto = new InventoryMovementRequestDto();
@@ -248,6 +263,7 @@ class InventoryMovementRequestDtoTest {
     }
 
     @Test
+    @DisplayName("Tipo inválido genera violación de @Pattern")
     void testTypeInvalidValue() {
         // Arrange
         InventoryMovementRequestDto dto = new InventoryMovementRequestDto();
@@ -269,6 +285,7 @@ class InventoryMovementRequestDtoTest {
     // PRODUCT ID VALIDATIONS
     // ---------------------------------------------------------
     @Test
+    @DisplayName("ProductId nulo genera violación de @NotNull")
     void testProductIdNull() {
         // Arrange
         InventoryMovementRequestDto dto = new InventoryMovementRequestDto();
@@ -287,6 +304,7 @@ class InventoryMovementRequestDtoTest {
     }
 
     @Test
+    @DisplayName("ProductId válido es aceptado")
     void testProductIdValid() {
         // Arrange
         InventoryMovementRequestDto dto = new InventoryMovementRequestDto();
@@ -302,6 +320,7 @@ class InventoryMovementRequestDtoTest {
     }
 
     @Test
+    @DisplayName("ProductId cero es aceptado (sin @Min ni @Positive)")
     void testProductIdZeroValid() {
         // Arrange
         InventoryMovementRequestDto dto = new InventoryMovementRequestDto();
@@ -317,6 +336,7 @@ class InventoryMovementRequestDtoTest {
     }
 
     @Test
+    @DisplayName("ProductId negativo es aceptado (sin @Min ni @Positive)")
     void testProductIdNegativeValid() {
         // Arrange
         InventoryMovementRequestDto dto = new InventoryMovementRequestDto();
@@ -335,6 +355,7 @@ class InventoryMovementRequestDtoTest {
     // MULTIPLE VIOLATIONS
     // ---------------------------------------------------------
     @Test
+    @DisplayName("Múltiples campos inválidos generan múltiples violaciones")
     void testMultipleViolations() {
         // Arrange
         InventoryMovementRequestDto dto = new InventoryMovementRequestDto();

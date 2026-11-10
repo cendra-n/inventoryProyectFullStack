@@ -6,6 +6,7 @@ import gm.inventoryproject.model.InventoryMovement;
 import gm.inventoryproject.model.Product;
 import gm.inventoryproject.repository.InventoryMovementRepository;
 import gm.inventoryproject.repository.ProductRepository;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -29,6 +30,7 @@ import static org.mockito.Mockito.*;
  * Verifica la lógica de negocio utilizando Mockito para los repositorios.
  * </p>
  */
+@DisplayName("Tests de InventoryMovementService con Mockito")
 @ExtendWith(MockitoExtension.class)
 class InventoryMovementServiceTest {
 
@@ -45,6 +47,7 @@ class InventoryMovementServiceTest {
     // GET ALL
     // ---------------------------------------------------------
     @Test
+    @DisplayName("Obtener todos los movimientos retorna lista completa")
     void testGetAll() {
         // Arrange
         Product product = Product.builder().id(3L).name("Botella de agua").build();
@@ -79,6 +82,7 @@ class InventoryMovementServiceTest {
     // GET BY ID
     // ---------------------------------------------------------
     @Test
+    @DisplayName("Obtener movimiento por ID existente retorna el movimiento")
     void testGetByIdSuccess() {
         // Arrange
         Long id = 1L;
@@ -103,6 +107,7 @@ class InventoryMovementServiceTest {
     }
 
     @Test
+    @DisplayName("Obtener movimiento por ID inexistente lanza ResourceNotFoundException")
     void testGetByIdNotFound() {
         // Arrange
         Long id = 999L;
@@ -121,6 +126,7 @@ class InventoryMovementServiceTest {
     // CREATE FROM DTO
     // ---------------------------------------------------------
     @Test
+    @DisplayName("Crear movimiento tipo IN incrementa el stock del producto")
     void testCreateFromDtoSuccessIn() {
         // Arrange
         InventoryMovementRequestDto dto = new InventoryMovementRequestDto();
@@ -161,6 +167,7 @@ class InventoryMovementServiceTest {
     }
 
     @Test
+    @DisplayName("Crear movimiento tipo OUT decrementa el stock del producto")
     void testCreateFromDtoSuccessOut() {
         // Arrange
         InventoryMovementRequestDto dto = new InventoryMovementRequestDto();
@@ -201,6 +208,7 @@ class InventoryMovementServiceTest {
     }
 
     @Test
+    @DisplayName("Crear movimiento con cantidad nula lanza IllegalArgumentException")
     void testCreateFromDtoQuantityNull() {
         // Arrange
         InventoryMovementRequestDto dto = new InventoryMovementRequestDto();
@@ -220,6 +228,7 @@ class InventoryMovementServiceTest {
     }
 
     @Test
+    @DisplayName("Crear movimiento con cantidad cero lanza IllegalArgumentException")
     void testCreateFromDtoQuantityZero() {
         // Arrange
         InventoryMovementRequestDto dto = new InventoryMovementRequestDto();
@@ -239,6 +248,7 @@ class InventoryMovementServiceTest {
     }
 
     @Test
+    @DisplayName("Crear movimiento con cantidad negativa lanza IllegalArgumentException")
     void testCreateFromDtoQuantityNegative() {
         // Arrange
         InventoryMovementRequestDto dto = new InventoryMovementRequestDto();
@@ -258,6 +268,7 @@ class InventoryMovementServiceTest {
     }
 
     @Test
+    @DisplayName("Crear movimiento con producto inexistente lanza ResourceNotFoundException")
     void testCreateFromDtoProductNotFound() {
         // Arrange
         InventoryMovementRequestDto dto = new InventoryMovementRequestDto();
@@ -279,6 +290,7 @@ class InventoryMovementServiceTest {
     }
 
     @Test
+    @DisplayName("Crear movimiento con tipo inválido lanza IllegalArgumentException")
     void testCreateFromDtoInvalidType() {
         // Arrange
         InventoryMovementRequestDto dto = new InventoryMovementRequestDto();
@@ -301,6 +313,7 @@ class InventoryMovementServiceTest {
     }
 
     @Test
+    @DisplayName("Crear movimiento OUT con stock cero lanza IllegalArgumentException")
     void testCreateFromDtoOutWithStockZero() {
         // Arrange
         InventoryMovementRequestDto dto = new InventoryMovementRequestDto();
@@ -328,6 +341,7 @@ class InventoryMovementServiceTest {
     }
 
     @Test
+    @DisplayName("Crear movimiento OUT con stock insuficiente lanza IllegalArgumentException")
     void testCreateFromDtoOutWithInsufficientStock() {
         // Arrange
         InventoryMovementRequestDto dto = new InventoryMovementRequestDto();
@@ -355,6 +369,7 @@ class InventoryMovementServiceTest {
     }
 
     @Test
+    @DisplayName("Crear movimiento OUT con stock exacto deja stock en cero")
     void testCreateFromDtoOutWithExactStock() {
         // Arrange
         InventoryMovementRequestDto dto = new InventoryMovementRequestDto();
@@ -401,6 +416,7 @@ class InventoryMovementServiceTest {
     // GET BY PRODUCT
     // ---------------------------------------------------------
     @Test
+    @DisplayName("Obtener movimientos por producto retorna lista de movimientos")
     void testGetByProductSuccess() {
         // Arrange
         Long productId = 3L;
@@ -432,6 +448,7 @@ class InventoryMovementServiceTest {
     }
 
     @Test
+    @DisplayName("Obtener movimientos por producto inexistente lanza ResourceNotFoundException")
     void testGetByProductNotFound() {
         // Arrange
         Long productId = 999L;
@@ -451,6 +468,7 @@ class InventoryMovementServiceTest {
     // GET BY DATE RANGE
     // ---------------------------------------------------------
     @Test
+    @DisplayName("Obtener movimientos por rango de fechas retorna lista de movimientos")
     void testGetByDateRange() {
         // Arrange
         LocalDateTime start = LocalDateTime.of(2026, 11, 1, 0, 0);
@@ -486,6 +504,7 @@ class InventoryMovementServiceTest {
     // GET BY PRODUCT AND DATE
     // ---------------------------------------------------------
     @Test
+    @DisplayName("Obtener movimientos por producto y fecha retorna lista de movimientos")
     void testGetByProductAndDate() {
         // Arrange
         Long productId = 3L;
