@@ -1,5 +1,3 @@
-
-
 # 📦 Inventory Project – Full Stack (Angular + Spring Boot)
 
 ## 📌 Descripción general
@@ -15,6 +13,18 @@ El punto de partida fue una **consigna de un curso de Udemy**, cuyo alcance inic
 * No había control real de inventario
 
 A partir de esa base, el proyecto fue **extendido y rediseñado completamente**, incorporando nuevas entidades, validaciones, reglas de negocio y funcionalidades propias de un sistema de inventarios real.
+
+---
+
+## 🆕 Novedades de la nueva versión (v2)
+
+Esta versión no agrega funcionalidades al sistema: **agrega confianza en lo que ya existe**.
+
+* ✅ **316 tests automatizados** en el backend, organizados por entidad.
+* 📝 **Tests documentados** con `@DisplayName` en español: cada uno describe, en lenguaje de negocio, qué regla protege.
+* 📚 **JavaDoc** en las clases del backend (modelos, DTOs, servicios, controllers, repositorios y excepciones).
+* 🤖 **`AGENTS.md`** en `backend/`: reglas de trabajo para asistentes de IA (alcance acotado, sin inventar reglas de negocio, sin tocar código de producción para "forzar" un test).
+* 🧪 Los tests **verifican el comportamiento real del código** y funcionan como red de seguridad para las futuras mejoras del proyecto.
 
 ---
 
@@ -129,6 +139,7 @@ Para facilitar la integración con el frontend y asegurar la calidad del softwar
 * **Hibernate**
 * **MySQL**
 * **Maven**
+* **JUnit 5** y **Mockito** (testing)
 
 ### **Frontend**
 
@@ -146,10 +157,10 @@ Para facilitar la integración con el frontend y asegurar la calidad del softwar
 inventoryProyectFullStack/
 │
 ├── backend/
-│   └── inventory-app (Spring Boot)
+│   └── inventory-app (Spring Boot)
 │
 ├── frontend/
-│   └── inventory-app (Angular)
+│   └── inventory-app (Angular)
 │
 └── docs/
     └── Como-documente-mi-API-asi.pdf
@@ -222,7 +233,97 @@ ng serve -o
 
 ## 🧪 Testing
 
-Actualmente el proyecto no incluye tests unitarios. Serán implementados en la próxima versión.
+El backend cuenta con **316 tests propios** (JUnit 5 + Mockito), más el test original de Spring (`contextLoads`). Los tests unitarios **no usan base de datos**: corren en segundos y no dependen de MySQL.
+
+### 🎯 Por qué importan
+
+* **Protegen las reglas de negocio.** Reglas como "no se puede eliminar un producto con movimientos" o "no se permite una salida sin stock suficiente" quedan verificadas automáticamente, no solo probadas a mano.
+* **Permiten refactorizar sin miedo.** Si un cambio rompe una regla, un test falla en segundos y señala dónde.
+* **Sirven como documentación viva.** Cada test lleva un `@DisplayName` que describe el comportamiento esperado en lenguaje de negocio, por ejemplo: *"OUT con cantidad igual al stock deja el stock en 0"*.
+* **Facilitan la evolución del proyecto.** Con las reglas actuales cubiertas, se pueden sumar funcionalidades nuevas (como login) con la seguridad de no romper lo que ya funciona.
+
+### 🗺️ Qué se testea y con qué herramienta
+
+| Capa | Herramienta | Qué verifica |
+|------|-------------|--------------|
+| **DTOs de request** | JUnit 5 + Bean Validation (`Validator` real) | Campos obligatorios, límites de longitud (mín, máx, mín-1, máx+1), patrones y valores numéricos |
+| **DTOs de response** | JUnit 5 | Constructor, getters y setters |
+| **Modelos** | JUnit 5 | Builder, constructor vacío y valores por defecto |
+| **Services** | JUnit 5 + **Mockito** (`@Mock`, `@InjectMocks`, `ArgumentCaptor`, `InOrder`) | Reglas de negocio, caminos de error y orden de las operaciones |
+| **Controllers** | `@WebMvcTest` + `MockMvc` + `@MockBean` | Códigos HTTP, cuerpo de la respuesta y validación del body |
+| **Excepciones y `GlobalExceptionHandler`** | JUnit 5 | Mensaje, status HTTP y formato de cada error |
+| **Configuración (`OpenApiConfig`)** | JUnit 5 | Título y versión de Swagger |
+| **Reportes (PDF)** | JUnit 5 + Mockito + `@WebMvcTest` | Generación del PDF y respuesta del endpoint |
+
+### 📊 Cobertura por lote
+
+| Lote | Alcance | Tests |
+|------|---------|-------|
+| 1 | Category | 58 |
+| 2 | Supplier | 71 |
+| 3 | Product | 74 |
+| 4 | InventoryMovement | 65 |
+| 5 | Excepciones, `GlobalExceptionHandler` y `OpenApiConfig` | 42 |
+| 6 | Reportes (`PdfReportService` y `ReportController`) | 6 |
+| | **Total propio** | **316** |
+
+### 🔍 Ejemplos de lo que se verifica
+
+**1. Una salida que deja el stock exactamente en 0 está permitida.**
+Con stock 10 y un movimiento OUT de 10, el stock final es 0 y el movimiento se guarda con tipo, cantidad y producto correctos. Este caso límite evita bloquear salidas legítimas.
+
+**2. Los errores no dejan rastro.**
+Si un movimiento es inválido (cantidad 0, tipo incorrecto, producto inexistente o stock insuficiente), se verifica con Mockito que **no se guardó nada** y que no hubo llamadas inesperadas a los repositorios.
+
+**3. El orden de las operaciones importa.**
+Con `InOrder` se comprueba que al registrar un movimiento se guarda primero el producto con su stock actualizado y después el movimiento.
+
+**4. Un producto sin movimientos sí se puede eliminar, aunque tenga stock inicial.**
+La regla es "no eliminar si tiene movimientos". Es una decisión de diseño deliberada: permite corregir errores de carga (por ejemplo, un producto dado de alta por equivocación) sin dejar registros innecesarios en el sistema. En cambio, una vez que el producto registra un ingreso o una salida, pasa a formar parte del historial de auditoría y queda protegido contra la eliminación.
+
+**5. El update de un producto nunca toca el stock.**
+Con `ArgumentCaptor` se comprueba que el stock persistido no cambia al editar. Además, categoría y proveedor solo se reemplazan cuando el producto no tiene movimientos.
+
+**6. Cada error devuelve el formato que corresponde.**
+`GlobalExceptionHandler` se prueba handler por handler: 400 para validaciones y duplicados, 404 para recursos inexistentes, 409 para conflictos de integridad y 500 para errores inesperados.
+
+**7. Las validaciones de los DTOs se prueban con límites exactos.**
+Por ejemplo, el nombre de una categoría acepta 2 y 40 caracteres, y rechaza 1 y 41.
+
+### ▶️ Cómo ejecutar los tests
+
+Desde la carpeta `backend/`:
+
+```bash
+# Todos los tests unitarios (sin necesidad de MySQL)
+mvn test -Dtest='!InventoryprojectApplicationTests'
+
+# Todos los tests, incluido el de contexto de Spring
+mvn test
+
+# Solo una entidad, por ejemplo Product
+mvn test -Dtest="Product*Test"
+```
+
+> ⚠️ `InventoryprojectApplicationTests` (`contextLoads`) levanta la aplicación completa y **necesita MySQL en ejecución**. Sin la base de datos, ese único test falla; los demás no se ven afectados.
+
+### 📝 Convenciones de los tests
+
+* Un test por comportamiento, con estructura **Arrange / Act / Assert**.
+* Nombres `testXxx` y `@DisplayName` en español describiendo la regla de negocio.
+* JavaDoc en los tests que documentan un comportamiento no obvio.
+* Los tests de unidad no usan base de datos real.
+
+---
+
+## 🔮 Próximos pasos
+
+El proyecto está pensado para seguir creciendo. Las próximas versiones contemplan:
+
+* 🧪 **Seguir ampliando la cobertura de tests** a medida que se sumen funcionalidades.
+* 🔐 **Login y autenticación de usuarios**, con acceso diferenciado a la información.
+* 🤖 **Chatbot de consulta de stock**: luego del login, cada persona podrá consultar el stock de forma conversacional.
+* 🚀 **Nuevas funcionalidades** sobre la base ya probada y documentada.
 
 ---
 
@@ -235,6 +336,7 @@ Este proyecto surge como evolución de una consigna de curso y fue ampliado con:
 * Validaciones robustas
 * Integración completa frontend-backend
 * Buenas prácticas de diseño
+* Tests automatizados y documentación técnica
 
 ---
 
@@ -244,5 +346,6 @@ Este proyecto surge como evolución de una consigna de curso y fue ampliado con:
 
 **Link a demo del proyecto:** [https://drive.google.com/file/d/1qEPnR7cspDyisZWhy6leafh1jSbTJdXk/view?usp=sharing]
 
----
+> ℹ️ Esta demo corresponde a la **versión 1** del proyecto, que todavía no incluía los tests ni la documentación técnica. La **versión actual (v2)** incorpora la suite de tests automatizados y la documentación del código. La demo se irá actualizando a medida que se incorporen las nuevas funcionalidades.
 
+---
